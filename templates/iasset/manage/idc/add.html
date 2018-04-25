@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+{#{% block self_head_css_js %}#}
+{#    <link href="/static/css/plugins/chosen/chosen.css" rel="stylesheet">#}
+{#    <script src="/static/js/plugins/chosen/chosen.jquery.js"></script>#}
+{#    <script src="/static/js/jquery-ui-1.12.1/jquery-ui.min.js"></script>#}
+{#{% endblock %}#}
+{#{% load mytags %}#}
+{#{% load bootstrap %}#}
+
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+{#select列表样式#}
+<style>
+    .select2-container--bootstrap {
+        width: 100% !important;
+    }
+    .select2-container--bootstrap .select2-selection {
+        border-radius: 1px;
+        border: 1px solid #e5e6e7;
+        color: #e5e6e7;
+    }
+    .select2-container--bootstrap.select2-container--focus .select2-selection, .select2-container--bootstrap.select2-container--open .select2-selection {
+        border-color: #1ab394;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    .select2-container--bootstrap .select2-dropdown {
+        border-color: #1ab394;
+    }
+    .select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
+        background-color:#1ab394;
+        color:#fff;
+    }
+    .input-btn {
+        display: inline;
+        border: 1px solid #ddd;
+        color: #373a3c;
+        vertical-align: middle;
+        background: #fff;
+        text-align: center;
+        height: 34px;
+        padding: 8px 12px;
+        margin-left: -4px;
+    }
+</style>
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 基本信息设置 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+                        <div class="panel-options">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="{% url 'manage_idc' %}" class="text-center"><i class="glyphicon glyphicon-home"></i> 机房 </a></li>
+                                <li><a href="{% url 'manage_os' %}" class="text-center"><i class="fa fa-linux"></i> 操作系统 </a></li>
+                                <li><a href="{% url 'manage_models' %}" class="text-center"><i class="glyphicon glyphicon-phone"></i> 设备型号 </a></li>
+{#                                <li><a href="{% url 'manage_tag' %}" class="text-center"><i class="glyphicon glyphicon-tags"></i> 标签 </a></li>#}
+                                <li><a href="{% url 'manage_cabinet' %}" class="text-center"><i class="glyphicon glyphicon-tags"></i>机柜</a></li>
+                            </ul>
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="tab-content">
+
+                                <div id="tab-1" class="ibox float-e-margins tab-pane active">
+
+{#                                <div id="tab-1" class="">#}
+
+                                    <div class="alert alert-warning text-center" style="display: none"></div>
+
+                                    <div class="alert alert-success text-center" style="display: none"></div>
+
+                                    <form id="id_addform" target="_self" method="post" class="form-horizontal" role="form" >{% csrf_token %}
+
+                                        <br>
+                                        <div class="form-group" >
+                                            <label for="inputName" class="col-sm-3 control-label">机房名称</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="name" id="inputName" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputAddr" class="col-sm-3 control-label">地址</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="address" id="inputAddr" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputContact" class="col-sm-3 control-label">联系人</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="contact" id="inputContact" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputFrom" class="col-sm-3 control-label">自有/租借</label>
+                                            <div class="col-sm-5" id="id_isself_div">
+                                                <select class="form-control select2" name="isself" aria-required="true"
+                                                        id="id_isself_select">
+                                                    {% for choices in isself_choices %}
+                                                        <option value="{{ choices.0 }}"> {{ choices.1 }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputContract" class="col-sm-3 control-label">合同</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="contract" id="inputContract" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputCost" class="col-sm-3 control-label">成本(元)</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="cost" id="inputCost" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputStart" class="col-sm-3 control-label">起始时间</label>
+                                            <div class="col-sm-5" id="id_startdate">
+                                                <input type="text" class="form-control" name="start_date" id="inputStart">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEnd" class="col-sm-3 control-label">结束时间</label>
+                                            <div class="col-sm-5" id="id_enddate">
+                                                <input type="text" class="form-control" name="end_date" id="inputEnd" >
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputStatus" class="col-sm-3 control-label">状态</label>
+                                            <div class="col-sm-5">
+                                                <select class="form-control select2" name="status" aria-required="true"
+                                                        id="id_status_select">
+                                                    {% for choices in status_choices %}
+                                                        <option value="{{ choices.0 }}"> {{ choices.1 }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputMemo" class="col-sm-3 control-label">备注</label>
+                                            <div class="col-sm-5">
+                                                <textarea rows="3" id="inputMemo" class="form-control" name="memo"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-4">
+{#                                                <button onclick="window.location.href='{% url 'manage_models' %}'" type="button" class="btn btn-default">取消</button>#}
+                                                <button onclick="javascript:history.go(-1);location.reload()" type="button" class="btn btn-default">返回</button>
+                                                <button type="submit" class="btn btn-primary">添加</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+{#                                </div>#}
+
+
+                                </div>  <!--tab-1 -->
+                            </div> <!--tab-content -->
+                        </div>   <!--panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    var required_fields = ["inputName"];
+    required_fields.forEach(function(field) {
+        $('label[for="' + field + '"]').parent().addClass("required");
+    });
+    $('#id_addform').validator({
+        timely: 1,
+        theme: "yellow_right_effect",
+        fields: {
+            "name": {
+                rule: "required",
+                tip: "输入机房名称",
+                ok: "",
+                msg: {required: "机房名称必须填写!"},
+                data: {'data-ok':"机房名称可以使用"}
+            },
+            "cost": {
+                rule: "number",
+                tip: "填数字",
+                ok: "",
+            },
+        },
+        valid: function(form) {
+{#            form.submit();#}
+            $.ajax({
+                type: "POST",
+                url:"{% url 'manage_idc_add' %}",
+                data:$('#id_addform').serialize(),
+                traditional: true,
+                dataType: "json",   //返回的数据类型
+                success: function (data) {
+                    if (data.smg != ''){
+                        console.log(data.smg);
+                        $(".alert-success").text(data.smg);
+                        $(".alert-success").show();
+                        $(".alert-warning").hide();
+                    }
+                    else if (data.emg != '') {
+                        console.log(data.emg);
+                        $(".alert-warning").text(data.emg);
+                        $(".alert-warning").show();
+                        $(".alert-success").hide();
+                    }
+
+                },
+            });
+
+        }
+    });
+
+    $(document).ready(function() {
+        $('#inputContact').select2({
+            language: "zh-CN",
+            placeholder: "请选择联系人",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#inputContract').select2({
+            language: "zh-CN",
+            placeholder: "请选择合同",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_isself_select').select2({
+            language: "zh-CN",
+            placeholder: "请选择",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_status_select').select2({
+            language: "zh-CN",
+            placeholder: "请选择状态",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+
+        $(".col-sm-5").delegate("span.select2-selection__clear","mouseover",function(){
+            $(this).attr("title","清空");
+        });
+
+{#        $('#id_startdate,#id_enddate').flatpickr({#}
+{#            utc: true,#}
+{#            locale: "zh",#}
+{#            wrap: true,#}
+{#            clickOpens: false,#}
+{#        });#}
+        $('#inputStart,#inputEnd').datetimepicker({
+            format: "YYYY-MM-DD",
+            locale: moment.locale('zh-cn'),
+            showTodayButton: true,
+            showClear: true,
+            keepOpen: true,
+        });
+
+    });
+
+
+
+
+</script>
+
+
+
+{% endblock %}

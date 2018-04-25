@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{#{% load mytags %}#}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 资产详情 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+                        <div class="panel-options">
+                            <ul class="nav nav-tabs">
+                                <li><a href="#" class="text-center"><i class="glyphicon glyphicon-home"></i>基本信息</a></li>
+                                <li><a href="#" class="text-center"><i class="fa fa-linux"></i>网络端口</a></li>
+                                <li><a href="#" class="text-center"><i class="glyphicon glyphicon-phone"></i>配件</a></li>
+                                <li><a href="#" class="text-center"><i class="glyphicon glyphicon-tags"></i>价格</a></li>
+                                <li><a href="#" class="text-center"><i class="glyphicon glyphicon-tags"></i>合同</a></li>
+                                <li><a href="#" class="text-center"><i class="glyphicon glyphicon-tags"></i>历史</a></li>
+                            </ul>
+                        </div>
+                        <div class="panel-body">
+
+                            <div id="toolbar" class="btn-group">
+                                <button id="btn_add" type="button" class="btn btn-primary" onclick="window.location.href='#'">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>保存
+                                </button>
+{#                                <button id="btn_edit" type="button" class="btn btn-warning">#}
+{#                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>修改#}
+{#                                </button>#}
+                                <button id="btn_delete" type="button" class="btn btn-danger">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>返回
+                                </button>
+                            </div>
+                            <form id="id_addform" target="_self" method="post" class="form-horizontal" role="form" >{% csrf_token %}
+                                security details
+                            </form>
+                        </div>   <!--panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

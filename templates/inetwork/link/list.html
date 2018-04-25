@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{#{% load mytags %}#}
+{#{% load bootstrap %}#}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+<style>
+    .columns .btn {
+        border: 1px solid #ccc;
+    }
+</style>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 链路信息列表 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+
+                        <div class="panel-body">
+                            <p>功能暂未开放</p>
+                        </div>   <!--panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+$(function () {
+
+    //1.初始化Table
+    var oTable = new TableInit();
+    oTable.Init();
+
+    //2.初始化Button的点击事件
+    var oButtonInit = new ButtonInit();
+    oButtonInit.Init();
+
+});
+
+
+var TableInit = function () {
+    var oTableInit = new Object();
+    //初始化Table
+    oTableInit.Init = function () {
+        $('#id_table').bootstrapTable({
+            url: '{% url 'service_list' %}',         //请求后台的URL（*）
+            method: 'get',                      //请求方式（*）
+            toolbar: '#toolbar',                //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            queryParams: oTableInit.queryParams,//传递参数（*）
+            queryParamsType:'',                 //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
+                                                // 设置为 '' 在这种情况下传给服务器的参数为：pageSize,pageNumber
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber:1,                       //初始化加载第一页，默认第一页
+            pageSize: 10,                       //每页的记录行数（*）
+            pageList: [10, 25, 50, 100, '所有'],        //可供选择的每页的行数（*）
+            search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+            strictSearch: false,                //设置为 true启用 全匹配搜索，否则为模糊搜索
+            showColumns: true,                  //是否显示所有的列
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+{#            height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度#}
+            uniqueId: "name",                     //每一行的唯一标识，一般为主键列
+            showToggle:true,                    //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: true,                   //是否显示详细页面模式
+            detailFormatter:function(index, row) {
+                detail = '<div style="margin-left: 2%">' +
+                        '服务名称：' + row['name'] + '<br/>' +
+                        '服务类型：' + row['type'] + '<br/>' +
+                        '服务等级：' + row['level'] + '<br/>' +
+                        '上级服务：' + row['parent_service'] + '<br/>' +
+                        '服务状态：' + row['status'] + '<br/>' +
+                        '联系人：' + row['contact'] + '<br/>' +
+                        '所属部门：' + row['department'] + '<br/>' +
+                        '相关合同：' + row['contract'] + '<br/>' +
+                        '上线时间：' + row['online_date'] + '<br/>' +
+                        '下线时间：' + row['offline_date'] + '<br/>' +
+                        '创建时间：' + row['create_date'] + '<br/>' +
+                        '更新时间：' + row['update_date'] + '<br/>' +
+                        '备注：' + row['memo'] + '<br/>' + '</div>';
+                return detail;
+            },
+
+            showExport:true,         //是否显示导出
+            exportDataType:'all',   //'basic', 'all', 'selected' 表示导出的模式是当前页、所有数据还是选中数据
+            exportTypes:['json', 'xml', 'csv', 'txt', 'sql', 'excel'],   //default: ['json', 'xml', 'csv', 'txt', 'sql', 'excel']
+
+            filterControl:true,      //显示列过滤框
+
+            columns: [{                   //列参数
+                checkbox: true,
+            }, {
+                field: 'name',               //跟后台传过来的字段名一直
+                title: '服务名称',
+                align: "center",
+                valign: "middle",
+                sortable:true,
+
+                searchable:true,
+                filterControl:'input',
+
+
+                formatter: function (value) {
+                    //通过formatter可以自定义列显示的内容
+                    // value：当前field的值，即id
+                    // row：当前行的数据
+                    // index: 当前行的行索引，从0开始
+                    // $detail：当前行下面创建的新行里面的td对象。
+                    var name = '<a href="{% url 'service_edit' %}?name='+value+'" >'+value+'</a>';
+                    return name;
+                }
+            }, {
+                field: 'level',
+                title: '服务等级',
+                align: 'center',
+                valign: 'middle',
+                searchable:true,
+                filterControl:'select',
+            }, {
+                field: 'status',
+                title: '状态',
+                align: 'center',
+                valign: 'middle',
+                searchable:true,
+                filterControl:'select',
+            }, {
+                field: 'department',
+                title: '所属部门',
+                align: 'center',
+                valign: 'middle',
+                searchable:true,
+                filterControl:'select',
+            },{
+                field: 'online_date',
+                title: '上线时间',
+                align: 'center',
+                valign: 'middle',
+                searchable:true,
+                filterControl:'input',
+            },{
+                field: 'contact',
+                title: '联系人',
+                align: 'center',
+                valign: 'middle',
+                searchable:true,
+                filterControl:'input',
+            },{
+                field: 'memo',
+                title: '备注',
+                align: "center",
+                valign: "middle",
+                searchable:true,
+                filterControl:'input',
+            },]
+        });
+    };
+
+    //这是bootstrap-table带参到后台去的代码
+    oTableInit.queryParams = function (params) {
+        var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+            pageNumber:params.pageNumber,  //页码
+            pageSize:params.pageSize,    //页面大小
+{#            search:params.search,#}
+            filter:params.filter,
+
+        };
+        return temp;
+    };
+    return oTableInit;
+};
+
+    var ButtonInit = function () {
+        var oInit = new Object();
+        var postdata = {};
+
+        oInit.Init = function () {
+            //初始化页面上面的按钮事件
+        };
+
+        return oInit;
+    };
+    //实现列拖拽变换表格尺寸
+    $(function(){
+        var onSampleResized = function(e){
+            var table = $(e.currentTarget); //reference to the resized table
+        };
+        $("table").colResizable({
+            liveDrag:true,
+            gripInnerHtml:"<div class='grip'></div>",
+            draggingClass:"dragging",
+            onResize:onSampleResized
+        });
+    });
+
+$(document).ready(function() {
+    $('#btn_delete').click(function () {
+
+{#        selections = $('#id_table').bootstrapTable('getSelections')#}
+        var id_select = $.map($('#id_table').bootstrapTable('getSelections'),function (row){
+            return row.id
+        });
+        console.log('id_select:',id_select);
+        if (id_select == ''){
+            alert("请至少选择一行!");
+            return false;
+        }
+        if (confirm("确定删除?")) {
+            $.ajax({
+                type: "post",
+                data: { "id_select": id_select},
+                traditional: true,                       /* 设置为false则后台接收到的数组名会是“id_select[]”*/
+{#                dataType: "json",#}
+                url: "{% url 'service_delete' %}",
+                success: function () {
+{#                    parent.location.reload();#}
+                    $('#id_table').bootstrapTable("remove",{
+                        field: "id",
+                        values: id_select
+                    });
+                }
+            });
+        }
+    });
+});
+
+</script>
+
+{% endblock %}

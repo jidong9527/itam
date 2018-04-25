@@ -1,0 +1,87 @@
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_bladecenter_select">所属刀箱</label>
+    <div class=" col-sm-8 col-lg-8 selectdiv">
+{#        <input class=" form-control" id="id_blade_center" maxlength="128" name="blade_center" type="text" data-tip="填写所在刀箱" data-inputstatus="tip">#}
+        <select class="form-control select2" name="bladecenter" aria-required="true" id="id_bladecenter_select">
+            <option></option>
+            {% for b in bladecenter_all %}
+                <option value="{{ b.id }}">{{ b.asset.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_slotnum">槽位</label>
+    <div class=" col-sm-8 col-lg-8 ">
+        <input type="number" min="0" class="form-control" id="id_slotnum" name="slotnum" value="0">
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_service">服务</label>
+    <div class=" col-sm-8 col-lg-8 selectdiv">
+{#        <input class=" form-control" id="id_service" maxlength="128" name="service" type="text" data-tip="服务" data-inputstatus="tip">#}
+        <select class="form-control select2" name="service" id="id_service">
+            <option></option>
+            {% for s in service_all %}
+                {% if s.type == "content" %}
+                    <option value="{{ s.id }}"> {{ s.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_os">操作系统</label>
+    <div class=" col-sm-8 col-lg-8 selectdiv">
+{#        <input class=" form-control" id="id_os" maxlength="128" name="os" type="text" data-tip="操作系统版本" data-inputstatus="tip">#}
+        <select class="form-control" name="os" id="id_os">
+            <option></option>
+            {% for os in os_all %}
+                <option value="{{ os.id }}"> {{ os.version }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_cpu">CPU数量</label>
+    <div class=" col-sm-8 col-lg-8 ">
+{#        <input class=" form-control" id="id_cpu" maxlength="128" name="cpu" type="text" data-tip=">CPU个数" data-inputstatus="tip">#}
+        <input type="number" min="0" class="form-control" id="id_cpu"
+                                                       placeholder="" name="cpu_count" value="0">
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_cputype">CPU型号</label>
+    <div class=" col-sm-8 col-lg-8 ">
+        <input class=" form-control" id="id_cputype" maxlength="128" name="cpu_model" type="text">
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_memory">内存大小(G)</label>
+    <div class=" col-sm-8 col-lg-8 ">
+{#        <input class=" form-control" id="id_memory" maxlength="128" name="memory" type="text" data-tip=">内存大小" data-inputstatus="tip">#}
+        <input type="number" min="0" class="form-control" id="id_memory"
+                                                       placeholder="" name="memory" value="0">
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_disk">磁盘容量(G)</label>
+    <div class=" col-sm-8 col-lg-8 ">
+{#        <input class=" form-control" id="id_disk" maxlength="128" name="disk" type="text" data-tip=">磁盘容量" data-inputstatus="tip">#}
+        <input type="number" min="0" class="form-control" id="id_disk"
+                                                       placeholder="" name="disk" value="0">
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_raidtype">RAID类型</label>
+    <div class=" col-sm-8 col-lg-8 ">
+        <input type="text" class="form-control" id="id_raidtype" name="raid_type">
+    </div>
+</div>

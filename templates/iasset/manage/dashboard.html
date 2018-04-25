@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{#{% load mytags %}#}
+{% block content %}
+    {% include 'nav_cat_bar.html' %}
+    <div class="wrapper wrapper-content">
+        <div class="row">
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <a href="#" class="label label-primary pull-right"> 添加 </a>
+                    <h5>机房</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><a href="#">IDC列表</a></h1>
+                    <small>All user</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <a href="#" class="label label-primary pull-right"> 添加 </a>
+                    <h5>操作系统</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><a href="#">操作系统列表</a></h1>
+                    <small>All host</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <a href="#" class="label label-primary pull-right"> 添加 </a>
+                    <h5>产品型号</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><a href="#"> <span id="online_users">型号列表</span></a></h1>
+{#                    <div class="stat-percent font-bold text-navy">{{ percent_online_user }} <i class="fa fa-level-up"></i></div>#}
+                    <small>型号列表</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+{#                    <span class="label label-primary pull-right">添加</span>#}
+{#                    <span class="glyphicon glyphicon-plus-sign pull-right"></span>#}
+                    <a href="#" class="label label-primary pull-right"> 添加 </a>
+                    <h5>机柜</h5>
+                </div>
+                <div class="ibox-content">
+                        <h1 class="no-margins"><a href="#"> <span id="online_hosts">机柜</span></a></h1>
+                    <small>机柜列表</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}

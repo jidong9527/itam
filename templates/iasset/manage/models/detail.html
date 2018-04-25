@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{#{% load mytags %}#}
+{% block content %}
+    {% include 'nav_cat_bar.html' %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary"><b>{{ models_detail.name }}</b></span>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a href="{% url 'manage_models_edit' %}?id={{ models_detail.id }}" title="编辑">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div>
+                            <div class="text-left">
+                                <table class="table">
+                                    <tr>
+                                        <td class="text-navy">设备型号</td>
+                                        <td>{{ models_detail.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">厂商</td>
+                                        <td>{{ models_detail.manufactory.name | default_if_none:""}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">设备高度</td>
+                                        <td>{{ models_detail.height | default_if_none:"" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">设备类型</td>
+                                        <td>{{ models_detail.get_asset_type_display | default_if_none:"" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">功率(W)</td>
+                                        <td>{{ models_detail.power | default_if_none:"" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建日期</td>
+                                        <td>{{ models_detail.create_date | date:"Y-m-d H:i:s"}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">更新日期</td>
+                                        <td>{{ models_detail.update_date | date:"Y-m-d H:i:s"}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">备注</td>
+                                        <td>{{ models_detail.memo | default_if_none:"" }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>操作历史</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user"></ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content inspinia-timeline">
+                        <div>
+                            <div class="text-left">
+                                <table class="table">
+{#                                    {% for result, info in result.items %}#}
+{#                                        {% for host, msg in info.items %}#}
+{#                                            {% ifequal result 'failed' %}#}
+{#                                            <tr>#}
+{#                                                <td class="text-navy" style="color: #ed5565">{{ host }}</td>#}
+{#                                                <td>{{ msg }}</td>#}
+{#                                            </tr>#}
+{#                                            {% else %}#}
+{#                                            <tr>#}
+{#                                                <td class="text-navy">{{ host }}</td>#}
+{#                                                <td>{{ msg }}</td>#}
+{#                                            </tr>#}
+{#                                            {% endifequal %}#}
+{#                                        {% endfor %}#}
+{#                                    {% endfor %}#}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+<script>
+{#    $(document).ready(function(){#}
+{#        $('#show').click(function(){#}
+{#            $('#last').css('display', 'none');#}
+{#            $('#all').css('display', 'block');#}
+{#        })#}
+{#    })#}
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{#{% block self_head_css_js %}#}
+{#    <link href="/static/css/plugins/chosen/chosen.css" rel="stylesheet">#}
+{#    <script src="/static/js/plugins/chosen/chosen.jquery.js"></script>#}
+{#    <script src="/static/js/jquery-ui-1.12.1/jquery-ui.min.js"></script>#}
+{#{% endblock %}#}
+{#{% load mytags %}#}
+{#{% load bootstrap %}#}
+
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+{#select列表样式#}
+<style>
+    .input-btn {
+        display: inline;
+        border: 1px solid #ddd;
+        color: #373a3c;
+        vertical-align: middle;
+        background: #fff;
+        text-align: center;
+        height: 34px;
+        padding: 8px 12px;
+        margin-left: -4px;
+    }
+    #loadingDiv {
+        background-color:grey;
+        filter: alpha(opacity=50);
+        opacity: 0.1;
+        display: none;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        display:none;
+    }
+</style>
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 填写网段基本信息 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+
+                        <div class="panel-body">
+
+                            <div class="tab-content">
+
+                                <div id="tab-1" class="ibox float-e-margins tab-pane active">
+
+{#                                <div id="tab-1" class="">#}
+
+                                    <div class="alert alert-warning text-center" style="display: none"></div>
+
+                                    <div class="alert alert-success text-center" style="display: none"></div>
+
+                                    <form id="id_addform" target="_self" method="post" class="form-horizontal" role="form" >{% csrf_token %}
+
+                                        <br>
+                                        <div class="form-group">
+                                            <label for="selectIPVersion" class="col-sm-3 control-label">网段类型</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="ip_version" id="inputIPVersion" value="{{ segment_detail.ip_version }}" readonly>
+{#                                                <select id="selectIPVersion" name="ip_version" class="form-control m-b" aria-required="true">#}
+{#                                                    {% for choice in version_choices %}#}
+{#                                                        {% if choice.0==segment_detail.ip_version %}#}
+{#                                                            <option value="{{ choice.0 }}" selected> {{ choice.1 }}</option>#}
+{#                                                        {% else %}#}
+{#                                                            <option value="{{ choice.0 }}"> {{ choice.1 }}</option>#}
+{#                                                        {% endif %}#}
+{#                                                    {% endfor %}#}
+{#                                                </select>#}
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group" >
+                                            <label for="inputAddress" class="col-sm-3 control-label">网段地址</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="address" id="inputAddress" value="{{ segment_detail.address }}" readonly>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group" >
+                                            <label for="inputMask" class="col-sm-3 control-label">掩码长度</label>
+                                            <div class="col-sm-5">
+                                                <input type="number" min="0" max="128" class="form-control" name="mask" id="inputMask" style="width: 40%;" value="{{ segment_detail.mask }}" readonly>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group" >
+                                            <label for="generateip" class="col-sm-3 control-label">是否自动生成IP</label>
+                                            <div class="col-sm-5">
+                                                <input type="radio" name="generateip" value="yes"/>是&nbsp;&nbsp;
+                                                <input type="radio" name="generateip" value="no" checked/>否
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group">
+                                            <label for="inputUsage" class="col-sm-3 control-label">用途</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="usage" id="inputUsage" value="{{ segment_detail.usage }}">
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group">
+                                            <label for="inputMemo" class="col-sm-3 control-label">备注</label>
+                                            <div class="col-sm-5">
+                                                <textarea rows="3" id="inputMemo" class="form-control" name="memo">{{ segment_detail.memo }}</textarea>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-4">
+{#                                                <button onclick="window.location.href='{% url 'manage_models' %}'" type="button" class="btn btn-default">取消</button>#}
+                                                <button onclick="javascript:history.go(-1);location.reload()" type="button" class="btn btn-default">返回</button>
+                                                <button type="submit" class="btn btn-primary">确定</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+{#                                </div>#}
+
+
+                                </div>  <!--tab-1 -->
+                            </div> <!--tab-content -->
+                        </div>   <!--panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    var required_fields = ["inputAddress"];
+    required_fields.forEach(function(field) {
+        $('label[for="' + field + '"]').parent().addClass("required");
+    });
+
+    $(document.body).append("<div id='loadingDiv'><img src='/static/img/loading.gif' style='margin-top:230px;margin-left:50%;'/></div>")
+
+    $('#id_addform').validate({
+        rules:{
+            address:{
+                required:true,
+            },
+            mask:{
+                required:true,
+                digits:true,
+            },
+        },
+        submitHandler:function(form){
+            $.ajax({
+                type: "POST",
+                url:"{% url 'network_segment_edit' %}",
+                data:$('#id_addform').serialize(),
+                traditional: true,
+                dataType: "json",   //返回的数据类型
+                beforeSend:function(){
+                    $(".alert-success").text("正在生成IP,请稍候......");
+                    $(".alert-warning").hide();
+                    $(".alert-success").show();
+                    $("#loadingDiv").fadeTo(200,0.5);
+                },
+                success: function (data) {
+                    if (data.smg != ''){
+                        console.log(data.smg);
+                        $(".alert-success").html(data.smg.replace(/\n/g,"<br/>"));
+                        $(".alert-success").show();
+                        $(".alert-warning").hide();
+                    }
+                    else if (data.emg != '') {
+                        console.log(data.emg);
+                        $(".alert-warning").text(data.emg);
+                        $(".alert-warning").show();
+                        $(".alert-success").hide();
+                    }
+                    else {
+                        $(".alert-warning").hide();
+                        $(".alert-success").hide();
+                    }
+                    $("#loadingDiv").fadeOut(200);
+                },
+                error: function() {
+                    $(".alert-warning").text("发生错误，请重试");
+                    $(".alert-warning").show();
+                    $(".alert-success").hide();
+                    $("#loadingDiv").fadeOut(200);
+                },
+            }); <!-- ajax -->
+        }
+
+    });
+
+
+</script>
+
+
+
+{% endblock %}

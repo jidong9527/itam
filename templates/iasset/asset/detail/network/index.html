@@ -1,0 +1,62 @@
+{% extends 'iasset/asset/detail/base.html' %}
+{% block title %}网络设备{% endblock %}
+{% block form %}
+    {% block conf %}
+        <div id="conf" class="tablediv" hidden>
+            <div id="toolbar_conf" class="btn-group">
+                <button id="btn_save" type="button" class="btn btn-danger" onclick="window.location.href='#'">
+                    <span class="fa fa-save" aria-hidden="true"></span>&nbsp;保存
+                </button>
+                <button id="btn_return" type="button" class="btn btn-primary" onclick="javascript:history.go(-1);location.reload()">
+                    <span class="fa fa-reply" aria-hidden="true"></span>&nbsp;返回
+                </button>
+            </div>
+            <div class="hr-line-dashed"></div>
+            <table class="detail_tab">
+                <tbody>
+                    <tr>
+                        <td class="td-lable form-group">
+                            <label class="control-label" for="selectCabinet">所在机柜</label>
+                        </td>
+                        <td class="td-input">
+                            <select class="form-control select2" name="cabinet" aria-required="true" id="selectCabinet">
+                                {% for c in cabinet_all %}
+                                    {% if c.id == asset_obj.network.cabinet.id %}
+                                        <option value="{{ c.id }}" selected>{{ c.idc }} -- {{ c.name }}</option>
+                                    {% else %}
+                                        <option value="{{ c.id }}">{{ c.idc }} -- {{ c.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </td>
+
+                        <td class="td-lable form-group">
+                            <label class="control-label" for="inputMemo">设备位置</label>
+                        </td>
+                        <td class="td-input">
+                            <input type="number" class="form-control" name="location" id="inputLocation" value="{{ asset_obj.network.location }}">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="td-lable form-group">
+                            <label class="control-label" for="selectService">服务信息</label>
+                        </td>
+                        <td class="td-input">
+                            <select class="form-control select2" name="service" aria-required="true" id="selectService">
+                                <option></option>
+                                {% for service in service_all %}
+                                    {% if service.id == asset_obj.network.service_id %}
+                                        <option value="{{ service.id }}" selected>{{ service.name }}</option>
+                                    {% else %}
+                                        <option value="{{ service.id }}">{{ service.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table> <!-- conf table end -->
+        </div> <!--conf div end -->
+    {% endblock %}
+{% endblock %}

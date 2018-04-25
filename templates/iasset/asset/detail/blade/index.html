@@ -1,0 +1,135 @@
+{% extends 'iasset/asset/detail/base.html' %}
+{% block title %}刀片{% endblock %}
+{% block form %}
+    {% block conf %}
+        <div id="conf" class="tablediv" hidden>
+        <div id="toolbar_conf" class="btn-group">
+            <button id="btn_save" type="button" class="btn btn-danger" onclick="window.location.href='#'">
+                <span class="fa fa-save" aria-hidden="true"></span>&nbsp;保存
+            </button>
+            <button id="btn_return" type="button" class="btn btn-primary" onclick="javascript:history.go(-1);location.reload()">
+                <span class="fa fa-reply" aria-hidden="true"></span>&nbsp;返回
+            </button>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <table class="detail_tab">
+            <tbody>
+                <tr>
+                    <td class="td-lable form-group">
+                        <label class="control-label" for="selectBladecenter">所属刀箱</label>
+                    </td>
+                    <td class="td-input">
+                        <select class="form-control select2" name="cabinet" aria-required="true" id="selectBladecenter">
+                            {% for b in bladecenter_obj %}
+                                {% if b.id == asset_obj.blade.bladecenter.id %}
+                                    <option value="{{ b.id }}" selected>{{ b.asset.name }}</option>
+                                {% else %}
+                                    <option value="{{ b.id }}">{{ b.asset.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+
+                    <td class="td-lable form-group">
+                        <label class="control-label" for="inputSlotnum">槽位</label>
+                    </td>
+                    <td class="td-input">
+                        <input type="number" class="form-control" name="slotnum" id="inputSlotnum" min="0" value="{{ asset_obj.blade.blade_center.slotsum }}">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="td-lable form-group">
+                        <label class="control-label" for="selectOS">操作系统版本</label>
+                    </td>
+                    <td class="td-input">
+                        <select class="form-control select2" name="os" aria-required="true" id="selectOS">
+                            {% for os in os_all %}
+                                {% if os.version == asset_obj.os %}
+                                    <option value="{{ os.id }}" selected>{{ os.get_os_type_display }} -- {{ os.version }}</option>
+                                {% else %}
+                                    <option value="{{ os.id }}">{{ os.get_os_type_display }} -- {{ os.version }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+
+                    <td class="td-lable form-group">
+                        <label class="control-label" for="selectService">服务信息</label>
+                    </td>
+                    <td class="td-input">
+{#                                                    <input type="text" class="form-control" name="model" id="inputModel" value="{{ asset_obj.server.service }}">#}
+                        <select class="form-control select2" name="service" aria-required="true" id="selectService">
+                            <option></option>
+                            {% for service in service_all %}
+                                {% if service.id == asset_obj.server.service_id %}
+                                    <option value="{{ service.id }}" selected>{{ service.name }}</option>
+                                {% else %}
+                                    <option value="{{ service.id }}">{{ service.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="td-lable">
+                        <label class="control-label" for="inputRaidtype">RAID类型</label>
+                    </td>
+                    <td class="td-input">
+                        <input type="text" class="form-control" name="raid_type" id="inputRaidtype" value="{{ asset_obj.server.raid_type | default_if_none:""}}">
+                    </td>
+
+                    <td class="td-lable">
+                        <label class="control-label" for="selectStoragespace">存储空间使用</label>
+                    </td>
+                    <td class="td-input">
+{#                                                    <input type="text" class="form-control"  name="status" id="inputStatus" value="{{ asset_obj.server.storage_used |  default_if_none:""}}">#}
+                        <select class="form-control select2" name="storage_used" aria-required="true" id="selectStoragespace">
+                            {% for space in storagespace_all %}
+                                {% if space.id == asset_obj.server.storage_used %}
+                                    <option value="{{ space.id }}" selected>{{ space.host_on }}:{{ space.name }}({{ space.volume }})</option>
+                                {% else %}
+                                    <option value="{{ space.id }}">{{ space.host_on }}:{{ space.name }}({{ space.volume }})</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="td-lable">
+                        <label class="control-label" for="inputCPUcount">CPU核数</label>
+                    </td>
+                    <td class="td-input">
+                        <input type="number" min="0" class="form-control" id="inputCPUcount" name="cpu_count" value="{{ asset_obj.server.cpu_count | default_if_none:"" }}">
+                    </td>
+
+                    <td class="td-lable">
+                        <label class="control-label" for="inputCPUmodel">CPU型号</label>
+                    </td>
+                    <td class="td-input">
+                        <input class="form-control" id="inputCPUmodel" maxlength="128" name="cpu_model" type="text" value="{{ asset_obj.server.cpu_model | default_if_none:""}}">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="td-lable">
+                        <label class="control-label" for="inputMemory">内存大小(G)</label>
+                    </td>
+                    <td class="td-input">
+                        <input type="number" min="0" class="form-control" id="inputMemory" name="memory" value="{{ asset_obj.server.memory | default_if_none:""}}">
+                    </td>
+
+                    <td class="td-lable">
+                        <label class="control-label" for="inputDisk">磁盘容量(G)</label>
+                    </td>
+                    <td class="td-input">
+                        <input type="number" min="0" class="form-control" id="inputDisk" name="disk" value="{{ asset_obj.server.disk | default_if_none:""}}">
+                    </td>
+                </tr>
+            </tbody>
+        </table> <!-- conf table end -->
+    </div> <!--conf div end -->
+    {% endblock %}
+{% endblock %}

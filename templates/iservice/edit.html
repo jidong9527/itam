@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{#{% block self_head_css_js %}#}
+{#    <link href="/static/css/plugins/chosen/chosen.css" rel="stylesheet">#}
+{#    <script src="/static/js/plugins/chosen/chosen.jquery.js"></script>#}
+{#    <script src="/static/js/jquery-ui-1.12.1/jquery-ui.min.js"></script>#}
+{#{% endblock %}#}
+{#{% load mytags %}#}
+{#{% load bootstrap %}#}
+
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+{#select列表样式#}
+<style>
+    .select2-container--bootstrap {
+        width: 100% !important;
+    }
+    .select2-container--bootstrap .select2-selection {
+        border-radius: 1px;
+        border: 1px solid #e5e6e7;
+        color: #e5e6e7;
+    }
+    .select2-container--bootstrap.select2-container--focus .select2-selection, .select2-container--bootstrap.select2-container--open .select2-selection {
+        border-color: #1ab394;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    .select2-container--bootstrap .select2-dropdown {
+        border-color: #1ab394;
+    }
+    .select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
+        background-color:#1ab394;
+        color:#fff;
+    }
+    .input-btn {
+        display: inline;
+        border: 1px solid #ddd;
+        color: #373a3c;
+        vertical-align: middle;
+        background: #fff;
+        text-align: center;
+        height: 34px;
+        padding: 8px 12px;
+        margin-left: -4px;
+    }
+</style>
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 编辑服务信息 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+
+                        <div class="panel-body">
+
+                            <div class="tab-content">
+
+                                <div id="tab-1" class="ibox float-e-margins tab-pane active">
+
+{#                                <div id="tab-1" class="">#}
+
+                                    <div class="alert alert-warning text-center" style="display: none"></div>
+
+                                    <div class="alert alert-success text-center" style="display: none"></div>
+
+                                    <form id="id_addform" target="_self" method="post" class="form-horizontal" role="form" >{% csrf_token %}
+
+                                        <br>
+                                        <div class="form-group" >
+                                            <label for="inputName" class="col-sm-3 control-label">服务名称</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="name" id="inputName" value="{{ service_detail.name }}">
+                                                <input type="hidden" name="old_name" value="{{ service_detail.name }}" >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="selectLevel" class="col-sm-3 control-label">服务等级</label>
+                                            <div class="col-sm-5">
+{#                                                <input type="text" class="form-control" name="address" id="inputAddr" placeholder="">#}
+                                                <select id="selectLevel" name="level" class="form-control m-b select2" aria-required="true">
+                                                    <option></option>
+                                                    {% for choice in level_choices %}
+                                                        {% if choice.0 == service_detail.level %}
+                                                            <option value="{{choice.0}}" selected> {{ choice.1 }}</option>
+                                                        {% else %}
+                                                            <option value="{{choice.0}}"> {{ choice.1 }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="selectType" class="col-sm-3 control-label">服务类型</label>
+                                            <div class="col-sm-5">
+{#                                                <input type="text" class="form-control" name="address" id="inputAddr" placeholder="">#}
+                                                <select id="selectType" name="type" class="form-control m-b select2" aria-required="true">
+                                                    <option></option>
+                                                    {% for choice in type_choices %}
+                                                        {% if choice.0 == service_detail.type %}
+                                                            <option value="{{ choice.0 }}" selected> {{ choice.1 }}</option>
+                                                        {% else %}
+                                                            <option value="{{ choice.0 }}"> {{ choice.1 }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="selectParent" class="col-sm-3 control-label">所属服务</label>
+                                            <div class="col-sm-5" id="id_isself_div">
+                                                <select class="form-control select2" name="parent_service" aria-required="true"
+                                                        id="selectParent">
+                                                    <option></option>
+                                                    {% for choices in parent_choices %}
+                                                        {% if service_detail.parent_service_id == choices.id %}
+                                                            <option value="{{ choices.id }}" selected> {{ choices.name }}</option>
+                                                        {% else %}
+                                                            <option value="{{ choices.id }}"> {{ choices.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="selectStatus" class="col-sm-3 control-label">服务状态</label>
+                                            <div class="col-sm-5">
+{#                                                <input type="text" class="form-control" name="address" id="inputAddr" placeholder="">#}
+                                                <select id="selectStatus" name="status" class="form-control m-b select2" aria-required="true">
+                                                    {% for choice in status_choices %}
+                                                        {% if service_detail.status == choice.0 %}
+                                                            <option value="{{choice.0}}" selected> {{ choice.1 }}</option>
+                                                        {% else %}
+                                                            <option value="{{choice.0}}"> {{ choice.1 }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputContact" class="col-sm-3 control-label">联系人</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="contact" id="inputContact" value="{{ service_detail.contact }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="selectDepartment" class="col-sm-3 control-label">所属部门</label>
+                                            <div class="col-sm-5" id="id_isself_div">
+                                                <select class="form-control select2" name="department" aria-required="true"
+                                                        id="selectDepartment">
+                                                    <option></option>
+                                                    {% for choices in department_choices %}
+                                                        {% if service_detail.department == choices.id %}
+                                                            <option value="{{ choices.id }}" selected> {{ choices.name }}</option>
+                                                        {% else %}
+                                                            <option value="{{ choices.id }}"> {{ choices.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="selectContract" class="col-sm-3 control-label">合同</label>
+                                            <div class="col-sm-5">
+{#                                                <input type="text" class="form-control" name="contract" id="selectContract" placeholder="">#}
+                                                <select class="form-control select2" name="contract" aria-required="true"
+                                                        id="selectContract">
+
+                                                    {% for choices in contract_choices %}
+                                                        {% if service_detail.contract == choices.id %}
+                                                            <option value="{{ choices.id }}" selected> {{ choices.name }}</option>
+                                                        {% else %}
+                                                            <option value="{{ choices.id }}"> {{ choices.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputOnline" class="col-sm-3 control-label">上线时间</label>
+                                            <div class="col-sm-5" id="id_online_div">
+                                                <input type="text" class="form-control" name="online_date" id="inputOnline" value="{{ service_detail.online_date | date:"Y-m-d" }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputOffline" class="col-sm-3 control-label">下线时间</label>
+                                            <div class="col-sm-5" id="id_offline_div">
+                                                <input type="text" class="form-control" name="offline_date" id="inputOffline" value="{{ service_detail.offline_date | date:"Y-m-d" }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputMemo" class="col-sm-3 control-label">备注</label>
+                                            <div class="col-sm-5">
+                                                <textarea rows="3" id="inputMemo" class="form-control" name="memo">{{ service_detail.memo }}</textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-4">
+{#                                                <button onclick="window.location.href='{% url 'manage_models' %}'" type="button" class="btn btn-default">取消</button>#}
+                                                <button onclick="javascript:history.go(-1);location.reload()" type="button" class="btn btn-default">返回</button>
+                                                <button type="submit" class="btn btn-primary">确定</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+{#                                </div>#}
+
+
+                                </div>  <!--tab-1 -->
+                            </div> <!--tab-content -->
+                        </div>   <!--panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    var required_fields = ['inputName','selectLevel','selectType'];
+    required_fields.forEach(function(field) {
+        $('label[for="' + field + '"]').parent().addClass("required");
+    });
+    $('#id_addform').validator({
+        timely: 1,
+        theme: "yellow_right_effect",
+        fields: {
+            "name": {
+                rule: "required",
+                tip: "输入服务名称",
+                ok: "",
+                msg: {required: "服务名称必须填写!"},
+                data: {'data-ok':"服务名称可以使用"}
+            },
+        },
+        valid: function(form) {
+{#            form.submit();#}
+            $.ajax({
+                type: "POST",
+                url:"{% url 'service_edit' %}",
+                data:$('#id_addform').serialize(),
+                traditional: true,
+                dataType: "json",   //返回的数据类型
+                success: function (data) {
+                    if (data.smg != ''){
+                        console.log(data.smg);
+                        $(".alert-success").text(data.smg);
+                        $(".alert-success").show();
+                        $(".alert-warning").hide();
+                    }
+                    else if (data.emg != '') {
+                        console.log(data.emg);
+                        $(".alert-warning").text(data.emg);
+                        $(".alert-warning").show();
+                        $(".alert-success").hide();
+                    }
+
+                },
+            });
+
+        }
+    });
+
+    $(document).ready(function() {
+        $('#selectLevel').select2({
+            language: "zh-CN",
+            placeholder: "请选择服务等级",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#selectContract').select2({
+            language: "zh-CN",
+            placeholder: "请选择合同",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#selectDepartment').select2({
+            language: "zh-CN",
+            placeholder: "请选择部门",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#selectParent').select2({
+            language: "zh-CN",
+            placeholder: "请选择上级服务",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#selectStatus').select2({
+            language: "zh-CN",
+            placeholder: "请选择状态",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#selectType').select2({
+            language: "zh-CN",
+            placeholder: "请选择服务类型",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+
+        $(".col-sm-5").delegate("span.select2-selection__clear","mouseover",function(){
+            $(this).attr("title","清空");
+        });
+
+{#        $('#id_startdate,#id_enddate').flatpickr({#}
+{#            utc: true,#}
+{#            locale: "zh",#}
+{#            wrap: true,#}
+{#            clickOpens: false,#}
+{#        });#}
+        $('#inputOnline,#inputOffline').datetimepicker({
+            format: "YYYY-MM-DD",
+            locale: moment.locale('zh-cn'),
+            showTodayButton: true,
+            showClear: true,
+            keepOpen: true,
+        });
+
+    });
+
+
+
+
+</script>
+
+
+
+{% endblock %}

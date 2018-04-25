@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{#{% block self_head_css_js %}#}
+{#    <link href="/static/css/plugins/chosen/chosen.css" rel="stylesheet">#}
+{#    <script src="/static/js/plugins/chosen/chosen.jquery.js"></script>#}
+{#    <script src="/static/js/jquery-ui-1.12.1/jquery-ui.min.js"></script>#}
+{#{% endblock %}#}
+{#{% load mytags %}#}
+{#{% load bootstrap %}#}
+
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+{#select列表样式#}
+<style>
+    span.select2-dropdown.select2-dropdown--below {
+        height: 250px;
+    }
+
+    .select2-container--bootstrap .select2-selection {
+        border-radius: 1px;
+        border: 1px solid #e5e6e7;
+        color: #e5e6e7;
+    }
+    .select2-container--bootstrap {
+        width: 100% !important;
+    }
+    .select2-container--bootstrap.select2-container--focus .select2-selection, .select2-container--bootstrap.select2-container--open .select2-selection {
+        border-color: #1ab394;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    .select2-container--bootstrap .select2-dropdown {
+        border-color: #1ab394;
+    }
+    .select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
+        background-color:#1ab394;
+        color:#fff;
+    }
+    .input-btn {
+        display: inline;
+        border: 1px solid #ddd;
+        color: #373a3c;
+        vertical-align: middle;
+        background: #fff;
+        text-align: center;
+        height: 34px;
+        padding: 8px 12px;
+        margin-left: -4px;
+    }
+</style>
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 填写端口信息 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+
+                        <div class="panel-body">
+
+                            <div class="tab-content">
+
+                                <div id="tab-1" class="ibox float-e-margins tab-pane active">
+
+{#                                <div id="tab-1" class="">#}
+
+                                    <div class="alert alert-warning text-center" style="display: none"></div>
+
+                                    <div class="alert alert-success text-center" style="display: none"></div>
+
+                                    <form id="id_addform" target="_self" method="post" class="form-horizontal" role="form" >{% csrf_token %}
+
+                                        <br>
+                                        <input value="{{ port_obj.id }}" name="port_id" style="display: none">
+                                        <div class="form-group" >
+                                            <label for="inputHost" class="col-sm-3 control-label">占用设备</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="host_name" id="inputHost" value="{{ asset_name }}" readonly>
+                                            </div>
+                                        </div>
+{#                                        <div class="form-group" >#}
+{#                                            <label for="inputName" class="col-sm-3 control-label">端口名称</label>#}
+{#                                            <div class="col-sm-5">#}
+{#                                                <input type="text" class="form-control" name="name" id="inputName" value="{{ port_obj.name }}">#}
+{#                                            </div>#}
+{#                                        </div>#}
+                                        <div class="form-group">
+                                            <label for="inputPortnum" class="col-sm-3 control-label">端口号</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="port_num" id="inputPortnum" value="{{ port_obj.port_num }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="selectIPaddr" class="col-sm-3 control-label">IP地址</label>
+                                            <div class="col-sm-5">
+                                                <select id="selectIPaddr" name="ip" class="form-control m-b" aria-required="true">
+                                                    <option value="{{ port_obj.ip.id }}" selected>{{ port_obj.ip.ipaddress }}</option>
+                                                    <optgroup label="所有未使用的IP如下：">
+                                                    {% for choice in ipaddress_choice %}
+                                                        <option value="{{ choice.id }}"> {{ choice.ipaddress }}</option>
+                                                    {% endfor %}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" >
+                                            <label for="inputDescription" class="col-sm-3 control-label">端口描述</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="description" id="inputDescription" value="{{ port_obj.description | default_if_none:'' }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="selectPorttype" class="col-sm-3 control-label">端口类型</label>
+                                            <div class="col-sm-5">
+                                                <select id="selectPorttype" name="port_type" class="form-control m-b" aria-required="true">
+                                                    <option value="">-----</option>
+                                                    {% for choice in port_type_choice %}
+                                                        {% if choice.0 == port_obj.port_type %}
+                                                            <option value="{{ choice.0 }}" selected> {{ choice.1 }}</option>
+                                                        {% else %}
+                                                            <option value="{{ choice.0 }}"> {{ choice.1 }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputRate" class="col-sm-3 control-label">端口速率</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="rate" id="inputRate" value="{{ port_obj.rate }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="selectConnection" class="col-sm-3 control-label">连接到</label>
+                                            <div class="col-sm-5" id="selectConnection_div">
+                                                <select class="form-control select2" name="connection" aria-required="true"
+                                                        id="selectConnection">
+                                                    <option></option>
+                                                    {% for choices in port_connecte_choices %}
+                                                        {% if choices.id == port_obj.connection %}
+                                                            <option value="{{ choices.id }}" selected> {{ choices.host.name }} -- {{ choices.port_num }}</option>
+                                                        {% else %}
+                                                            <option value="{{ choices.id }}"> {{ choices.host.name }} -- {{ choices.port_num }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputMemo" class="col-sm-3 control-label">备注</label>
+                                            <div class="col-sm-5">
+                                                <textarea rows="3" id="inputMemo" class="form-control" name="memo">{{ port_obj.memo }}</textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-4">
+                                                <button onclick="javascript:history.go(-1);location.reload()" type="button" class="btn btn-default">返回</button>
+                                                <button type="submit" class="btn btn-primary">确定</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+{#                                </div>#}
+
+
+                                </div>  <!--tab-1 -->
+                            </div> <!--tab-content -->
+                        </div>   <!--panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    var required_fields = ["inputPortnum"];
+    required_fields.forEach(function(field) {
+        $('label[for="' + field + '"]').parent().addClass("required");
+    });
+
+    $('#id_addform').validate({
+        rules:{
+            port_num: {
+                required:true,
+{#                alphanumeric: true,#}
+            },
+        },
+        messages: {
+            port_num: {
+                required: "端口号必须填写！",
+{#                alphanumeric: "只能输入字母、数字或者下划线"#}
+            },
+        },
+        submitHandler:function(form ){
+            $.ajax({
+                type: "POST",
+                url:"{% url 'asset_detail_item_action' asset_type asset_name 'ports' 'edit' %}",
+                data:$('#id_addform').serialize(),
+                traditional: true,
+                dataType: "json",   //返回的数据类型
+                success: function (data) {
+                    if (data.smg != ''){
+                        console.log(data.smg);
+                        $(".alert-success").text(data.smg);
+                        $(".alert-warning").hide();
+                        $(".alert-success").show();
+                    }
+                    else if (data.emg != '') {
+                        console.log(data.emg);
+                        $(".alert-warning").text(data.emg);
+                        $(".alert-success").hide();
+                        $(".alert-warning").show();
+                    }
+                    else {
+                        $(".alert-warning").hide();
+                        $(".alert-success").hide();
+                    }
+
+                },
+            }); <!-- ajax end-->
+        }
+
+    }); <!--validate end -->
+
+    $(document).ready(function() {
+        $('#selectIPaddr').select2({
+            language: "zh-CN",
+            placeholder: "请选择IP地址",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#selectConnection').select2({
+            language: "zh-CN",
+            placeholder: "请选择对端设备端口",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+
+        $("#selectConnection_div").delegate("span.select2-selection__clear","mouseover",function(){
+            $(this).attr("title","清空");
+        });
+    });
+</script>
+
+{% endblock %}

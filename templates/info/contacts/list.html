@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{#{% load mytags %}#}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="ipModal" tabindex="-1" role="dialog" aria-labelledby="ipModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="ipModalLabel">
+                    请输入联系人信息：
+                </h4>
+            </div>
+            <div class="modal-body">
+                 <form class="form-horizontal" role="form">
+                      <div class="form-group" >
+                        <label for="inputName" class="col-sm-2 control-label">姓名</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="inputName" placeholder="">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="inputPhone" class="col-sm-2 control-label">电话</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="inputPhone" placeholder="">
+                        </div>
+                      </div>
+                     <div class="form-group">
+                        <label for="inputMail" class="col-sm-2 control-label">邮箱</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="inputMail" placeholder="">
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <label for="inputCompany" class="col-sm-2 control-label">公司</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="inputCompany" placeholder="">
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <label for="inputPosition" class="col-sm-2 control-label">职位</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="inputPosition" placeholder="">
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <label for="inputMemo" class="col-sm-2 control-label">备注</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="inputService" placeholder="">
+                        </div>
+                     </div>
+                     <div class="modal-footer">
+                         <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                <button type="submit" class="btn btn-primary">添加</button>
+                            </div>
+                         </div>
+                      </div>
+                </form>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins" id="all">
+                <div class="ibox-title">
+                    <h5> 联系人列表</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <form id="asset_form">
+                        <div class="col-sm-1" style="padding-left: 0">
+                            <a class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ipModal"> 添加联系人 </a>
+                        </div>
+
+                        <div class="col-sm-7" style="padding-left: 0px">
+{#                            <label>#}
+{#                                <select name="idc" class="form-control m-b" onchange="change_info()" >  {# onchange="change_info()" #}
+{#                                    <option value="">- 占用状态 -</option>#}
+{#                                    {% for status in use_status %}#}
+{#                                        {% ifequal idc.name idc_name %}#}
+{#                                            <option value="{{idc.name}}" selected> {{ idc.name|slice:":20" }}</option>#}
+{#                                        {% else %}#}
+{#                                            <option value="{{ status.0 }}"> {{ status.1 }}</option>#}
+{#                                        {% endifequal %}#}
+{#                                    {% endfor %}#}
+{#                                </select>#}
+{#                            </label>#}
+                        </div>
+
+                        <div class="col-sm-4" style="padding-right: 0">
+                             <div class="input-group inline-group">
+                                <input type="text" class="form-control m-b input-sm" id="search_input" name="keyword" value="{{ keyword }}" placeholder="Search">
+                                <input type="text" style="display: none">
+                                <div class="input-group-btn">
+                                    <button id='search_btn' href="#" type="button" class="btn btn-sm btn-primary search-btn">
+                                        - 搜索 -
+                                    </button>
+                                    <button type="button" href="#" name="export" class="btn btn-sm btn-success search-btn-excel" onclick="return false">
+                                        - 导出 -
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="export"></div>
+                        <table class="table table-striped table-bordered table-hover " id="editable" name="editable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">
+                                        <input id="checkall" type="checkbox" class="i-checks" name="checkall" value="checkall" data-editable='false'>
+                                    </th>
+                                    <th class="text-center"> 姓名 </th>
+                                    <th class="text-center"> 电话 </th>
+                                    <th class="text-center"> 邮箱 </th>
+                                    <th class="text-center"> 公司 </th>
+                                    <th class="text-center"> 职位 </th>
+                                    <th class="text-center"> 备注 </th>
+{#                                    <th class="text-center"> 备注 </th>#}
+                                    <th class="text-center"> 操作 </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+{#                            {% for asset in assets.object_list %}#}
+{#                                <tr class="gradeX">#}
+{#                                    <td class="text-center" name="id" value="{{ asset.id }}" data-editable='false'>#}
+{#                                        <input name="id" value="{{ asset.id }}" type="checkbox" class="i-checks">#}
+{#                                    </td>#}
+{#                                    <td class="text-center hostname"> <a href="{% url 'asset_detail' %}?id={{ asset.id }}">{{ asset.hostname|default_if_none:"" }}</a></td>#}
+{#                                    <td class="text-center"> {{ asset.ip|default_if_none:"" }} </td>#}
+{#                                    <td class="text-center"> {{ asset.idc.name|default_if_none:"" }} </td>#}
+{#                                    <td class="text-center">{{ asset.group.all|group_str2 }}</td>#}
+{#                                    <td class="text-center">{{ asset.cpu }}|{{ asset.memory }}|{{ asset.disk }}</td>#}
+{#                                    <td class="text-center">{{ asset.system_type|default_if_none:"" }}{{ asset.system_version|default_if_none:"" }}</td>#}
+{#                                    <td class="text-center"> {{ asset.cpu|get_cpu_core|default_if_none:"" }} </td>#}
+{#                                    <td class="text-center"> {{ asset.memory|default_if_none:"" }}{% if asset.memory %}G{% endif %}</td>#}
+{#                                    <td class="text-center"> {{ asset.disk|get_disk_info }}{% if asset.disk %}G{% endif %}</td>#}
+{#                                    <td class="text-center" data-editable='false'>#}
+{#                                        <a href="{% url 'asset_edit' %}?id={{ asset.id }}" class="btn btn-xs btn-info">编辑</a>#}
+{#                                        <a value="{{ asset.id }}" class="conn btn btn-xs btn-warning">更新</a>#}
+{#                                        <a value="{% url 'asset_del' %}?id={{ asset.id }}" class="btn btn-xs btn-danger asset_del">删除</a>#}
+{#                                    </td>#}
+{#                                </tr>#}
+{#                            {% endfor %}#}
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input type="button" id="contact_del" class="btn btn-danger btn-sm"  name="del_button" value="删除"/>
+                                <a value="" type="button" class="btn btn-sm btn-warning iframe">修改</a>
+                                <input type="button" id="contact_update" class="btn btn-info btn-sm"  name="update_button" value="更新"/>
+{#                                <input type="button" id="asset_update_all" class="btn btn-primary btn-sm"  name="update_button" value="更新全部"/>#}
+                            </div>
+                            {% include 'paginator.html' %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+
+{% block self_footer_js %}
+{% endblock %}

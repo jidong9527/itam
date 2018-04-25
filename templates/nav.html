@@ -1,0 +1,104 @@
+{#{% if request.session.role_id == 2 %}#}
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            {% include 'nav_user_profile.html' %}
+            <li id="index">
+               <a href="/"><i class="fa fa-dashboard"></i> <span class="nav-label">仪表盘</span><span class="label label-info pull-right"></span></a>
+            </li>
+             <li id="iasset">
+                <a><i class="glyphicon glyphicon-list-alt"></i> <span class="nav-label">资产</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li class="index"> <a href="{% url 'asset_index' %}">资产列表<span class="label label-info pull-right">{{ asset_total_num }}</span></a></li>
+                    <li class="manage"> <a href="{% url 'asset_manage' %}">基本信息设置</a></li>
+                </ul>
+            </li>
+            <li id="inetwork">
+                <a><i class="glyphicon glyphicon-globe"></i> <span class="nav-label">网络</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li class="ip"><a href="{% url 'network_ip' %}">IP<span class="label label-info pull-right"></span></a></li>
+                    <li class="segment"><a href="{% url 'network_segment' %}">网段</a></li>
+                    <li class="link"><a href="{% url 'network_link' %}">链路</a></li>
+{#                    <li class="topology"><a href="network_topology">拓扑</a></li>#}
+                </ul>
+            </li>
+            <li id="iservice">
+                <a><i class="fa fa-inbox"></i> <span class="nav-label">服务</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li class="index"> <a href="{% url 'service_index' %}">服务列表<span class="label label-info pull-right">{{ service_online_num }}/{{ service_total_num }}</span></a></li>
+                </ul>
+            </li>
+            <li id="info">
+                <a><i class="glyphicon glyphicon-info-sign"></i> <span class="nav-label">信息</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li class="contract"><a href="{% url 'contract' %}">合同</a></li>
+                    <li class="supplier"><a href="{% url 'company' %}">供货商/厂商</a></li>
+{#                    <li class="manufacturers"><a href="{% url 'manufacturers' %}">厂商</a></li>#}
+                    <li class="contacts"> <a href="{% url 'contacts' %}">联系人</a></li>
+                </ul>
+            </li>
+            <li id="istatistic">
+                <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">统计</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li class="service">
+                        <a href="{% url 'service' %}">服务视图</a>
+                    </li>
+                    <li class="department">
+                        <a href="{% url 'department' %}">部门视图</a>
+                    </li>
+                    <li class="project">
+                        <a href="{% url 'project' %}">项目视图</a>
+                    </li>
+                </ul>
+            </li>
+            <li id="ilog">
+               <a href="{% url 'log_list' %}"><i class="fa fa-files-o"></i> <span class="nav-label">日志</span><span class="label label-info pull-right"></span></a>
+            </li>
+{#            {% if request.session.role_id == 0 %}#}
+                <li id="iuser">
+                    <a><i class="fa fa-group"></i> <span class="nav-label">用户</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li class="user"><a href="{% url 'user' %}">用户</a></li>
+                        <li class="usergroup"><a href="{% url 'group' %}">用户组</a></li>
+                        <li class="departments"><a href="{% url 'departments' %}">部门</a></li>
+                    </ul>
+                </li>
+{#            {% endif %}#}
+            <li id="isetting">
+                   <a href="{% url 'setting' %}"><i class="fa fa-gears"></i> <span class="nav-label">设置</span><span class="label label-info pull-right"></span></a>
+            </li>
+            <li class="special_link">
+                <a href="http://home.cnnic.cn/" target="_blank"><i class="fa fa-database"></i> <span class="nav-label">访问HOME</span></a>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+{#{% endif %}#}
+
+{#{% if request.session.role_id == 0 %}#}
+{#<nav class="navbar-default navbar-static-side" role="navigation">#}
+{#    <div class="sidebar-collapse">#}
+{#        <ul class="nav" id="side-menu">#}
+{#            {% include 'nav_user_profile.html' %}#}
+{#            <li id="juser">#}
+{#               <a href="{% url 'user_detail' %}"><i class="fa fa-dashboard"></i> <span class="nav-label">仪表盘</span><span class="label label-info pull-right"></span></a>#}
+{#            </li>#}
+{#            <li id="jasset">#}
+{#               <a href="{% url 'asset_list' %}"><i class="fa fa-inbox"></i> <span class="nav-label">查看主机</span><span class="label label-info pull-right"></span></a>#}
+{#            </li>#}
+{#            <li id="file">#}
+{#                <a href="#"><i class="fa fa-download"></i> <span class="nav-label">上传下载</span><span class="fa arrow"></span></a>#}
+{#                <ul class="nav nav-second-level">#}
+{#                    <li class="upload"><a href="{% url 'file_upload' %}">文件上传</a></li>#}
+{#                    <li class="download"><a href="{% url 'file_download' %}">文件下载</a></li>#}
+{#                </ul>#}
+{#            </li>#}
+{##}
+{#            <li class="special_link">#}
+{#                <a href="http://www.cnnic.cn" target="_blank"><i class="fa fa-database"></i> <span class="nav-label">访问官网</span></a>#}
+{#            </li>#}
+{#        </ul>#}
+{#    </div>#}
+{#</nav>#}
+{#{% endif %}#}

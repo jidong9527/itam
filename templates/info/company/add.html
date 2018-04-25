@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{#{% load mytags %}#}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins" id="all">
+                <div class="ibox-title">
+                    <h5> 添加供货商/厂商</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    {% if emg %}
+                        <div class="alert alert-warning text-center">{{ emg }}</div>
+                    {% endif %}
+                    {% if smg %}
+                        <div class="alert alert-success text-center">{{ smg }}</div>
+                    {% endif %}
+                    <form id="companyaddForm" method="post" class="form-horizontal" action="{% url 'company_add' %}" target="_self">{% csrf_token %}
+                        <br>
+
+                        <div class="form-group">
+                            <label for="inputName" class="col-sm-3 control-label">公司名称</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="inputName" placeholder="" name="company">
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label for="inputAddress" class="col-sm-3 control-label">公司地址</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="inputAddress" placeholder="" name="address">
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label for="inputContact" class="col-sm-3 control-label">联系人</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="inputContact" placeholder="" name="contact">
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label for="inputPhone" class="col-sm-3 control-label">联系电话</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="inputPhone" placeholder="" name="phone">
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label for="inputMemo" class="col-sm-3 control-label">备注</label>
+                            <div class="col-sm-5">
+                                <textarea rows="3" id="inputMemo" class="form-control" name="memo"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-5">
+{#                                <button class="btn btn-default" type="button" onclick="window.location.href='{% url 'company' %}'" > 取消 </button>#}
+{#                                <button class="btn btn-default" type="button" onclick="window.location.href=document.referrer" > 取消 </button>#}
+                                <button class="btn btn-default" type="button" onclick="javascript:history.go(-1);location.reload()" > 返回 </button>
+                                <button class="btn btn-primary" type="sumbit"> 确定 </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    var required_fields = ["inputName"];
+    required_fields.forEach(function(field) {
+        $('label[for="' + field + '"]').parent().addClass("required");
+    });
+
+    $('#companyaddForm').validator({
+        timely: 2,
+        theme: "yellow_right_effect",
+        fields: {
+            "company": {
+                rule: "required",
+                tip: "公司名称",
+                ok: "",
+                msg: {required: "必须填写!"},
+                data: {'data-ok':"公司名称可以使用"}
+            }
+        },
+        valid: function(form) {
+            form.submit();
+            }
+    });
+</script>
+{% endblock %}
+

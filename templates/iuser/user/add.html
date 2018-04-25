@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{#{% load mytags %}#}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+<style>
+    .columns .btn {
+        border: 1px solid #ccc;
+    }
+</style>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins" id="all">
+                <div class="ibox-title">
+                    <h5>用户列表</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+                        <div class="panel-options">
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="tab-content">
+
+                                <div id="tab-1" class="ibox float-e-margins tab-pane active">
+
+{#                                <div id="tab-1" class="">#}
+                                    <div class="alert alert-warning text-center" style="display: none"></div>
+
+                                    <div class="alert alert-success text-center" style="display: none"></div>
+                                    <form id="id_addform" target="_self" class="form-horizontal" role="form" >{% csrf_token %}
+
+                                        <br>
+
+                                        <div class="form-group">
+                                            <label for="inputUsername" class="col-sm-3 control-label">用户名</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" id="inputUsername" placeholder="" name="username">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputPassword" class="col-sm-3 control-label">密码</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control inputPlaceholder" id="inputPassword" placeholder="" name="password">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputName" class="col-sm-3 control-label">姓名</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" id="inputName" placeholder="" name="name">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="select_role" class="col-sm-3 control-label">角色</label>
+                                            <div class="col-sm-3 selectdiv">
+                                                <select  id="select_role" name="role" class="form-control select2" tabindex="2">
+                                                    {% for role in role_choice %}
+                                                        <option value="{{ role.0 }}">{{ role.1 }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="select_active" class="col-sm-3 control-label">用户状态</label>
+                                            <div class="col-sm-3 selectdiv">
+                                                <select  id="select_active" name="is_active" class="form-control select2" tabindex="2">
+                                                    <option value="True">激活</option>
+                                                    <option value="False">禁用</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="select_department" class="col-sm-3 control-label">用户组</label>
+                                            <div class="col-sm-3 selectdiv">
+                                                <select  id="select_group" name="group" class="form-control select2"   tabindex="2">
+                                                    {% for g in group_all %}
+                                                        <option value="">{{ g.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="select_department" class="col-sm-3 control-label">所属部门</label>
+                                            <div class="col-sm-3 selectdiv">
+                                                <select  id="select_department" name="department" class="form-control select2"   tabindex="2">
+                                                    {% for d in departments %}
+                                                        <option value="">{{ d }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputMemo" class="col-sm-3 control-label">备注</label>
+                                            <div class="col-sm-3">
+                                                {#                          <input type="datetime" class="form-control" id="inputMemo" placeholder="">#}
+                                                <textarea rows="3" id="inputMemo" class="form-control" name="memo"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-4">
+    {#                                                <button onclick="window.location.href='{% url 'manage_models' %}'" type="button" class="btn btn-default">取消</button>#}
+                                                <button onclick="javascript:history.go(-1);location.reload()" type="button" class="btn btn-default">返回</button>
+                                                <button type="submit" class="btn btn-primary">添加</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+{#                                </div>#}
+
+
+                                </div>  <!--tab-1 -->
+                            </div> <!--tab-content -->
+                        </div>   <!--panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% block self_footer_js %}
+    <script>
+        var required_fields = ["inputUsername","inputPassword"];
+        required_fields.forEach(function(field) {
+            $('label[for="' + field + '"]').parent().addClass("required");
+        });
+        $('#id_addform').validator({
+            timely: 1,
+            theme: "yellow_right_effect",
+            fields: {
+                "username": {
+                    rule: "required",
+                    tip: "填写用户名",
+                    ok: "",
+                    msg: {required: "用户名不能为空!"},
+                },
+                "password": {
+                    rule: "required",
+                    tip: "填写密码",
+                    ok: "",
+                    msg: {required: "密码不能为空!"},
+                }
+            },
+            valid: function(form) {
+    {#            form.submit();#}
+                $.ajax({
+                    type: "POST",
+                    url:"{% url 'user_add' %}",
+                    data:$('#id_addform').serialize(),
+                    traditional: true,
+                    dataType: "json",   //返回的数据类型
+                    success: function (data) {
+                        if (data.smg != ''){
+                            console.log(data.smg);
+                            $(".alert-success").text(data.smg);
+                            $(".alert-success").show();
+                            $(".alert-warning").hide();
+                        }
+                        else if (data.emg != '') {
+                            console.log(data.emg);
+                            $(".alert-warning").text(data.emg);
+                            $(".alert-warning").show();
+                            $(".alert-success").hide();
+                        }
+                    },
+                });<!-- ajax end -->
+
+            }   <!-- function end -->
+        });
+        $(document).ready(function() {
+            $('#select_role').select2({
+                language: "zh-CN",
+                placeholder: "请选择角色",
+                allowClear: true,
+                theme: "bootstrap",
+            });
+            $('#select_active').select2({
+                language: "zh-CN",
+                placeholder: "是否激活",
+                allowClear: true,
+                theme: "bootstrap",
+            });
+            $('#select_department').select2({
+                language: "zh-CN",
+                placeholder: "请选择所属部门",
+                allowClear: true,
+                theme: "bootstrap",
+            });
+            $('#select_group').select2({
+                language: "zh-CN",
+                placeholder: "请选择所属组",
+                allowClear: true,
+                theme: "bootstrap",
+            });
+            $(".selectdiv").delegate("span.select2-selection__clear","mouseover",function(){
+                $(this).attr("title","清空");
+            });
+        });
+
+    </script>
+{% endblock %}
+{% endblock %}

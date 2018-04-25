@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+{#{% load mytags %}#}
+{#{% load bootstrap %}#}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+<style>
+    .file-box{ position:relative;width:100%}
+    .txt{ height:22px; border:1px solid #cdcdcd; width:180px;}
+    .file{ position:absolute; top:0; right:80px; height:24px; filter:alpha(opacity:0);opacity: 0;width:260px }
+
+    span.select2-dropdown.select2-dropdown--below {
+        height: 250px;
+    }
+    .select2-container--bootstrap .select2-selection {
+        border-radius: 1px;
+        border: 1px solid #e5e6e7;
+        color: #e5e6e7;
+    }
+    .select2-container--bootstrap {
+        width: 100% !important;
+    }
+    .select2-container--bootstrap.select2-container--focus .select2-selection, .select2-container--bootstrap.select2-container--open .select2-selection {
+        border-color: #1ab394;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    .select2-container--bootstrap .select2-dropdown {
+        border-color: #1ab394;
+    }
+    .select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
+        background-color:#1ab394;
+        color:#fff;
+    }
+
+</style>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 填写资产基本信息 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+                        <div class="panel-options">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="{% url 'asset_add' %}?asset_type=server" class="text-center"><i class="fa fa-laptop"></i> 单台添加 </a></li>
+                                <li><a href="{% url 'asset_add_batch' %}" class="text-center"><i class="fa fa-bar-chart-o"></i> 批量添加 </a></li>
+                            </ul>
+                        </div>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div id="tab-1" class="ibox float-e-margins tab-pane active">
+                                    <div class="alert alert-warning text-center" style="display: none"></div>
+                                    <div class="alert alert-success text-center" style="display: none"></div>
+
+                                    <form id="id_addform" class="form-horizontal"> {% csrf_token %}
+                                        <div class="form-group">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3 " for="id_assettype">设备类型</label>
+                                                    <div class=" col-sm-8 col-lg-8 ">
+{#                                                        <input class=" form-control" id="id_assettype" maxlength="128" name="assettype" type="text" aria-required="true" data-tip="选择设备类型" data-inputstatus="tip">#}
+                                                        <select class="form-control" name="assettype" aria-required="true" id="id_assettype">
+                                                            {% for type in asset_types %}
+                                                                {% if type.0 == asset_type %}
+                                                                    <option value="{{ type.0 }}" selected> {{ type.1 }}</option>
+                                                                {% else %}
+                                                                    <option value="{{ type.0 }}"> {{ type.1 }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+    {#                                            <div class="hr-line-dashed"></div>#}
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3 " for="id_contract">合同</label>
+                                                    <div class=" col-sm-8 col-lg-8 selectdiv">
+{#                                                        <input class=" form-control" id="id_contract" maxlength="128" name="contract" type="text" aria-required="true" data-tip="选择合同" data-inputstatus="tip">#}
+                                                        <select class="form-control select2" name="contract" aria-required="true" id="id_contract">
+                                                            <option></option>
+                                                            {% for contract in asset_contract %}
+                                                                <option value="{{ contract.id }}">{{ contract.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+    {#                                            <div class="hr-line-dashed"></div>#}
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3" for="id_assetnumber">资产编号</label>
+                                                    <div class=" col-sm-8 col-lg-8 ">
+                                                        <input class=" form-control" id="id_assetnumber" maxlength="128" name="assetnumber" type="text">
+                                                    </div>
+                                                </div>
+
+    {#                                            <div class="hr-line-dashed"></div>#}
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3" for="id_assetname">设备名称</label>
+                                                    <div class="col-sm-8 col-lg-8 ">
+                                                        <input class="form-control" id="id_assetname" maxlength="128" name="name" type="text">
+                                                    </div>
+                                                </div>
+
+    {#                                            <div class="hr-line-dashed"></div>#}
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3" for="id_serialnumber">序列号</label>
+                                                    <div class=" col-sm-8 col-lg-8 ">
+                                                        <input class=" form-control" id="id_serialnumber" maxlength="128" name="sn" type="text" >
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3" for="id_model">设备型号</label>
+                                                    <div class=" col-sm-8 col-lg-8 selectdiv">
+{#                                                        <input class=" form-control" id="id_model" maxlength="128" name="model" type="text" aria-required="true" data-tip="填写型号" data-inputstatus="tip">#}
+                                                        <select class="form-control select2" name="model" aria-required="true" id="id_model">
+                                                            <option></option>
+                                                            {% for m in modals_all %}
+{#                                                                {% if m.asset_type == "server" %}#}
+                                                                    <option value="{{ m.id }}">{{ m.manufactory.name }} -- {{ m.get_asset_type_display }} -- {{ m.name }}</option>
+{#                                                                {% endif %}#}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+    {#                                            <div class="hr-line-dashed"></div>#}
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3" for="id_asset_admin">设备管理员</label>
+                                                    <div class=" col-sm-8 col-lg-8 ">
+                                                        <input class="form-control" id="id_asset_admin" maxlength="128" name="asset_admin" type="text">
+                                                    </div>
+                                                </div>
+
+    {#                                            <div class="hr-line-dashed"></div>#}
+
+{#                                                <div class="form-group">#}
+{#                                                    <label class="control-label col-sm-3 col-lg-3" for="id_idc">所在机房</label>#}
+{#                                                    <div class=" col-sm-8 col-lg-8 ">#}
+{#                                                        <input class=" form-control" id="id_idc" maxlength="128" name="idc" type="text" aria-required="true" data-tip="填写机房" data-inputstatus="tip">#}
+{#                                                    </div>#}
+{#                                                </div>#}
+
+    {#                                            <div class="hr-line-dashed"></div>#}
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3" for="id_status">设备状态</label>
+                                                    <div class=" col-sm-8 col-lg-8 ">
+{#                                                        <input class=" form-control" id="id_status" maxlength="128" name="status" type="text" aria-required="true" data-tip="填写设备状态" data-inputstatus="tip">#}
+                                                        <select class="form-control" name="status" aria-required="true">
+                                                        {% for status in asset_status %}
+                                                            {% ifequal status.0 "inuse" %}
+                                                                <option value="{{ status.0 }}" selected> {{ status.1 }}</option>
+                                                            {% else %}
+                                                                <option value="{{ status.0 }}">{{ status.1 }}</option>
+                                                            {% endifequal %}
+{#                                                              <option value="{{ status.0 }}"> {{ status.1 }}</option>#}
+                                                        {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+{#                                                <div class="form-group">#}
+{#                                                    <label class="control-label col-sm-3 col-lg-3" for="id_tag">标签</label>#}
+{#                                                    <div class=" col-sm-8 col-lg-8 ">#}
+{#                                                        <input class=" form-control" id="id_tag" maxlength="128" name="tag" type="text" aria-required="true" data-tip="填写标签" data-inputstatus="tip">#}
+{#                                                    </div>#}
+{#                                                </div>#}
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3" for="id_qrcode">二维码</label>
+                                                    <div class=" col-sm-8 col-lg-8 ">
+{#                                                        <input class=" form-control" id="id_qrcode" maxlength="128" name="qrcode" type="text" aria-required="true" data-tip="上传二维码" data-inputstatus="tip">#}
+                                                        <div class="file-box">
+                                                            <input id='id_qrcode' name="qrcode" style="display:none"/>
+{#                                                            <input type="file" name="qrcode_name" class="file" id="fileField" size="28" onchange="document.getElementById('id_qrcode').value=this.value" />#}
+                                                            <input type="file" class="form-control" onchange="document.getElementById('id_qrcode').value=this.value"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3" for="id_picture">设备图片</label>
+                                                    <div class=" col-sm-8 col-lg-8 ">
+{#                                                        <input class=" form-control" id="id_picture" maxlength="128" name="picture" type="text" aria-required="true" data-tip="上传设备照片" data-inputstatus="tip">#}
+                                                        <div class="file-box">
+                                                            <input id='id_picture' name="picture" style="display:none"/>
+{#                                                            <input type="file" name="picture_name" class="file" id="fileField" size="28" onchange="document.getElementById('id_picture').value=this.value" />#}
+                                                            <input type="file" class="form-control" onchange="document.getElementById('id_picture').value=this.value"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+{#                                                <div class="form-group" hidden>#}
+{#                                                    <label class="control-label col-sm-3 col-lg-3" for="id_creator">创建人</label>#}
+{#                                                    <div class=" col-sm-8 col-lg-8 ">#}
+{#                                                        <input class=" form-control" value="{{ current_user.id }}" id="id_creator" maxlength="128" name="creator" type="text" readonly="readonly">#}
+{##}
+{#                                                    </div>#}
+{#                                                </div>#}
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-3 col-lg-3" for="id_memo">备注</label>
+                                                    <div class=" col-sm-8 col-lg-8 ">
+                                                        <textarea rows="3" id="id_memo" class="form-control" name="memo"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6" id="id_assettype_attribute">
+{#                                                {% include 'iasset/asset/add/server.html' %}#}
+                                                {% include include_html %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-5">
+                                                <button class="btn btn-primary" type="submit"> 提交 </button>
+                                                <button class="btn btn-danger" type="reset"> 重置 </button>
+
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    var required_fields = ["id_assettype", "id_serialnumber", "id_assetname", "id_model"];
+    required_fields.forEach(function(field) {
+        $('label[for="' + field + '"]').parent().addClass("required");
+    });
+    function select_init() {
+        $('#id_contract').select2({
+            placeholder: "请选择合同",
+            language: "zh-CN",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_model').select2({
+            placeholder: "请选择设备型号",
+            language: "zh-CN",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_cabinet').select2({
+            placeholder: "请选择机柜",
+            language: "zh-CN",
+            allowClear: true,
+            theme: "bootstrap",
+{#            ajax: {#}
+{#                url: "{% url 'asset_add' %}",#}
+{#                cache: true#}
+{#            },#}
+        });
+        $('#id_service').select2({
+            language: "zh-CN",
+            placeholder: "请选择服务",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_os').select2({
+            language: "zh-CN",
+            placeholder: "请选择操作系统",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_bladecenter_select').select2({
+            language: "zh-CN",
+            placeholder: "请选择刀箱",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_hosted_on').select2({
+            language: "zh-CN",
+            placeholder: "请选择宿主机",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+
+        $(".selectdiv").delegate("span.select2-selection__clear","mouseover",function(){
+            $(this).attr("title","清空");
+        });
+    };
+    $(document).ready(function() {
+{#        $("#id_assettype_attribute").load('{{ asset_type }}.html',function(){#}
+{#            select_init();#}
+{#        });#}
+        select_init();
+    });
+    $("#id_assettype").change(function(){
+        window.location.href='{% url 'asset_add' %}?asset_type=' + $(this).val()
+{#        $("#id_assettype_attribute").load($(this).val() +'.html',function(){#}
+{#            select_init();#}
+{#        });#}
+    });
+
+    jQuery.validator.addMethod("isWords", function(value, element) {
+         return this.optional(element) || /^[A-Za-z0-9_\u4e00-\u9fa5]+$/.test(value);
+    }, "请输入合法字符(a-zA-Z0-9_)或者中文");
+    $('#id_addform').validate({
+{#        debug: true,#}
+        onfocusout: function(element){
+            $(element).valid();
+        },
+        rules:{
+            name:{
+                required: true,
+                isWords: true,
+            },
+            sn:{
+                required: true,
+            },
+            model:{
+                required: true,
+            },
+        },
+        messages: {
+            name: {
+                required: "设备名称必须填写！",
+            },
+            sn:{
+                required: "序列号必须填写！",
+            },
+            model:{
+                required: "设备型号必须选择！",
+            },
+        },
+        submitHandler:function(form){
+            $.ajax({
+                type: "POST",
+                url:"{% url 'asset_add' %}",
+                data:$('#id_addform').serialize(),
+                traditional: true,
+                dataType: "json",   //返回的数据类型
+                success: function (data) {
+                    if (data.smg != ''){
+                        console.log(data.smg);
+                        $(".alert-success").text(data.smg);
+                        $(".alert-success").show();
+                        $(".alert-warning").hide();
+                    }
+                    else if (data.emg != '') {
+                        console.log(data.emg);
+                        $(".alert-warning").text(data.emg);
+                        $(".alert-warning").show();
+                        $(".alert-success").hide();
+                    }
+                    else {
+                        $(".alert-warning").hide();
+                        $(".alert-success").hide();
+                    }
+
+                },
+            }); <!-- ajax end-->
+        }
+
+    }); <!--validate end -->
+
+
+</script>
+{% endblock %}

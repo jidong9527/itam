@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{#{% block self_head_css_js %}#}
+{#    <link href="/static/css/plugins/chosen/chosen.css" rel="stylesheet">#}
+{#    <script src="/static/js/plugins/chosen/chosen.jquery.js"></script>#}
+{#    <script src="/static/js/jquery-ui-1.12.1/jquery-ui.min.js"></script>#}
+{#{% endblock %}#}
+{#{% load mytags %}#}
+{#{% load bootstrap %}#}
+
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+{#select列表样式#}
+<style>
+    .select2-container--bootstrap {
+        width: 100% !important;
+    }
+    .select2-container--bootstrap .select2-selection {
+        border-radius: 1px;
+        border: 1px solid #e5e6e7;
+        color: #e5e6e7;
+    }
+    .select2-container--bootstrap.select2-container--focus .select2-selection, .select2-container--bootstrap.select2-container--open .select2-selection {
+        border-color: #1ab394;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    .select2-container--bootstrap .select2-dropdown {
+        border-color: #1ab394;
+    }
+    .select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
+        background-color:#1ab394;
+        color:#fff;
+    }
+    .input-btn {
+        display: inline;
+        border: 1px solid #ddd;
+        color: #373a3c;
+        vertical-align: middle;
+        background: #fff;
+        text-align: center;
+        height: 34px;
+        padding: 8px 12px;
+        margin-left: -4px;
+    }
+</style>
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 基本信息设置 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+                        <div class="panel-options">
+                            <ul class="nav nav-tabs">
+                                <li><a href="{% url 'manage_idc' %}" class="text-center"><i class="glyphicon glyphicon-home"></i> 机房 </a></li>
+                                <li><a href="{% url 'manage_os' %}" class="text-center"><i class="fa fa-linux"></i> 操作系统 </a></li>
+                                <li><a href="{% url 'manage_models' %}" class="text-center"><i class="glyphicon glyphicon-phone"></i> 设备型号 </a></li>
+{#                                <li><a href="{% url 'manage_tag' %}" class="text-center"><i class="glyphicon glyphicon-tags"></i> 标签 </a></li>#}
+                                <li class="active"><a href="{% url 'manage_cabinet' %}" class="text-center"><i class="glyphicon glyphicon-tags"></i>机柜</a></li>
+                            </ul>
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="tab-content">
+
+                                <div id="tab-1" class="ibox float-e-margins tab-pane active">
+
+{#                                <div id="tab-1" class="">#}
+
+                                    <div class="alert alert-warning text-center" style="display: none"></div>
+
+                                    <div class="alert alert-success text-center" style="display: none"></div>
+
+                                    <form id="id_addform" target="_self" method="post" class="form-horizontal" role="form" >{% csrf_token %}
+
+                                        <br>
+                                        <div class="form-group" >
+                                            <label for="inputName" class="col-sm-3 control-label">机柜名称</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="name" id="inputName" placeholder="" readonly value="{{ cabinet_detail.name }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_idc_select" class="col-sm-3 control-label">所在机房</label>
+                                            <div class="col-sm-5 selectdiv">
+                                                <select class="form-control select2" name="idc" aria-required="true"
+                                                        id="id_idc_select">
+                                                    {% for idc in idc_all %}
+                                                        {% if idc.id == cabinet_detail.idc_id %}
+                                                            <option value="{{ idc.id }}" selected>{{ idc.name }}</option>
+                                                        {% else %}
+                                                            <option value="{{ idc.id }}">{{ idc.name }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputLocation" class="col-sm-3 control-label">机柜位置</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="location" id="inputLocation" placeholder="" value="{{ cabinet_detail.location }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputLayer" class="col-sm-3 control-label">总层数</label>
+                                            <div class="col-sm-5">
+                                                <input type="number" min="0" class="form-control" id="inputLayer"
+                                                       placeholder="" name="layer" value="{{ cabinet_detail.layer }}" >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputSpecifications" class="col-sm-3 control-label">规格</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" name="specifications" id="inputSpecifications" placeholder="" value="{{ cabinet_detail.specifications }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="id_status_select" class="col-sm-3 control-label">状态</label>
+                                            <div class="col-sm-5 selectdiv">
+                                                <select class="form-control select2" name="status" aria-required="true"
+                                                        id="id_status_select">
+                                                    {% for choices in status_choices %}
+                                                        {% if choices.0 == cabinet_detail.status %}
+                                                            <option value="{{ choices.0 }}" selected>{{ choices.1 }}</option>
+                                                        {% else %}
+                                                            <option value="{{ choices.0 }}">{{ choices.1 }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputMemo" class="col-sm-3 control-label">备注</label>
+                                            <div class="col-sm-5">
+                                                <textarea rows="3" id="inputMemo" class="form-control" name="memo">{{ cabinet_detail.memo }}</textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-4">
+{#                                                <button onclick="window.location.href='{% url 'manage_models' %}'" type="button" class="btn btn-default">取消</button>#}
+                                                <button onclick="javascript:history.go(-1);location.reload()" type="button" class="btn btn-default">返回</button>
+                                                <button type="submit" class="btn btn-primary">确定</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+{#                                </div>#}
+
+
+                                </div>  <!--tab-1 -->
+                            </div> <!--tab-content -->
+                        </div>   <!--panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    var required_fields = ["inputName",'id_idc_select'];
+    required_fields.forEach(function(field) {
+        $('label[for="' + field + '"]').parent().addClass("required");
+    });
+    $('#id_addform').validator({
+        timely: 1,
+        theme: "yellow_right_effect",
+        fields: {
+            "name": {
+                rule: "required",
+                tip: "不可更改",
+                ok: "",
+                msg: {required: "机柜名称不可更改!"},
+                data: {'data-ok':"机柜名称可以使用"}
+            },
+            "idc": {
+                rule: "required",
+                tip: "选择所在机房",
+                ok: "",
+                msg: {required: "机房必须填写!"},
+                data: {'data-ok':"机房可以使用"}
+            },
+        },
+        valid: function(form) {
+{#            form.submit();#}
+            $.ajax({
+                type: "POST",
+                url:"{% url 'manage_cabinet_edit' %}",
+                data:$('#id_addform').serialize(),
+                traditional: true,
+                dataType: "json",   //返回的数据类型
+                success: function (data) {
+                    if (data.smg != ''){
+                        console.log(data.smg);
+                        $(".alert-success").text(data.smg);
+                        $(".alert-success").show();
+                        $(".alert-warning").hide();
+                    }
+                    else if (data.emg != '') {
+                        console.log(data.emg);
+                        $(".alert-warning").text(data.emg);
+                        $(".alert-warning").show();
+                        $(".alert-success").hide();
+                    }
+
+                },
+            });
+
+        }
+    });
+
+    $(document).ready(function() {
+        $('#id_idc_select').select2({
+            language: "zh-CN",
+            placeholder: "请选择机房",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_status_select').select2({
+            language: "zh-CN",
+            placeholder: "请选择状态",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+
+        $(".selectdiv").delegate("span.select2-selection__clear","mouseover",function(){
+            $(this).attr("title","清空");
+        });
+        $('#inputStart,#inputEnd').datetimepicker({
+            format: "YYYY-MM-DD",
+            locale: moment.locale('zh-cn'),
+            showTodayButton: true,
+            showClear: true,
+            keepOpen: true,
+        });
+
+    });
+
+
+
+
+</script>
+
+
+
+{% endblock %}

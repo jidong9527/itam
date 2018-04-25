@@ -1,0 +1,42 @@
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_cabinet">所在机柜</label>
+    <div class=" col-sm-8 col-lg-8 selectdiv">
+{#        <input class=" form-control" id="id_cabinet" maxlength="128" name="cabinet" type="text" data-tip="填写所在机柜" data-inputstatus="tip">#}
+        <select class="form-control select2" name="cabinet" id="id_cabinet">
+            <option></option>
+            {% for c in cabinet_all %}
+                <option value="{{ c.id }}">{{ c.idc }} -- {{ c.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_location">设备位置</label>
+    <div class=" col-sm-8 col-lg-8 ">
+        <input type="number" min="0" class="form-control" id="id_location"
+                                                       placeholder="" name="location" value="0">
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_total">磁带总量</label>
+    <div class=" col-sm-8 col-lg-8 ">
+        <input class=" form-control" id="id_total" name="total" type="number" value="0" min="0">
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_used">已用</label>
+    <div class=" col-sm-8 col-lg-8 ">
+        <input class=" form-control" id="id_used" name="used" type="number" value="0" min="0">
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_specification">磁带规格</label>
+    <div class=" col-sm-8 col-lg-8 ">
+        <input class=" form-control" id="id_specification" maxlength="128" name="specification" type="text">
+    </div>
+</div>
+

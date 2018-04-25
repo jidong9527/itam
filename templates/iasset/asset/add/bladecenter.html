@@ -1,0 +1,38 @@
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_cabinet">所在机柜</label>
+    <div class=" col-sm-8 col-lg-8 selectdiv">
+{#        <input class=" form-control" id="id_cabinet" maxlength="128" name="cabinet" type="text" data-tip="填写所在机柜" data-inputstatus="tip">#}
+        <select class="form-control select2" name="cabinet" aria-required="true" id="id_cabinet">
+            <option></option>
+            {% for c in cabinet_all %}
+                <option value="{{ c.id }}">{{ c.idc }} -- {{ c.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+{#<div class="form-group">#}
+{#    <label class="control-label col-sm-3 col-lg-3" for="id_height">设备高度</label>#}
+{#    <div class=" col-sm-8 col-lg-8 ">#}
+{#        <input class=" form-control" id="id_height" maxlength="128" name="height" type="text" data-tip="填写设备高度" data-inputstatus="tip">#}
+{#    </div>#}
+{#</div>#}
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_location">设备位置</label>
+    <div class=" col-sm-8 col-lg-8 ">
+{#        <input class=" form-control" id="id_location" maxlength="128" name="location" type="text" data-tip="填写设备位置" data-inputstatus="tip">#}
+        <input type="number" min="0" class="form-control" id="id_location"
+                                                       placeholder="" name="location" value="0">
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3 col-lg-3" for="id_slotsum">槽位总数</label>
+    <div class=" col-sm-8 col-lg-8 ">
+{#        <input class=" form-control" id="id_slotsum" maxlength="128" name="slotsum" type="text" data-tip="槽位总数" data-inputstatus="tip">#}
+        <input type="number" min="0" class="form-control" id="id_slotsum"
+                                                       placeholder="" name="slotsum" value="0">
+    </div>
+</div>
+

@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 基本信息设置 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+                        <div class="panel-options">
+                            <ul class="nav nav-tabs">
+                                <li><a href="{% url 'manage_idc' %}" class="text-center"><i class="glyphicon glyphicon-home"></i> 机房 </a></li>
+                                <li><a href="{% url 'manage_os' %}" class="text-center"><i class="fa fa-linux"></i> 操作系统 </a></li>
+                                <li class="active"><a href="{% url 'manage_models' %}" class="text-center"><i class="glyphicon glyphicon-phone"></i> 设备型号 </a></li>
+{#                                <li><a href="{% url 'manage_tag' %}" class="text-center"><i class="glyphicon glyphicon-tags"></i> 标签 </a></li>#}
+                                <li><a href="{% url 'manage_cabinet' %}" class="text-center"><i class="glyphicon glyphicon-tags"></i>机柜</a></li>
+                            </ul>
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="tab-content">
+
+                                <div id="tab-1" class="ibox float-e-margins tab-pane active">
+
+{#                                <div id="tab-1" class="">#}
+
+                                        <div class="alert alert-warning text-center" style="display: none"></div>
+
+                                        <div class="alert alert-success text-center" style="display: none"></div>
+
+                                        <form id="id_editform" target="_self" method="post" class="form-horizontal" role="form" >{% csrf_token %}
+
+                                        <br>
+
+                                        <div class="form-group">
+                                            <label for="inputVersion" class="col-sm-3 control-label">版本</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control inputPlaceholder" id="inputVersion" placeholder="CentOS_6.5_64位" name="version" value="{{ os_detail.version }}" readonly="readonly">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputOStype" class="col-sm-3 control-label">系统类型</label>
+                                            <div class="col-sm-5">
+{#                                                <input type="text" class="form-control" id="inputOStype" placeholder="" name="ostype">#}
+                                                <select name="ostype" class="form-control">
+                                                    {% for type in ostype_select %}
+                                                        {% if type.0 == os_detail.os_type %}
+                                                            <option value="{{ type.0 }}" elected="selected">{{ type.1 }}</option>
+                                                        {% else %}
+                                                            <option value="{{ type.0 }}">{{ type.1 }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputLicense" class="col-sm-3 control-label">License</label>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" id="inputLicense" name="license" value="{{ os_detail.soft_license }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputMemo" class="col-sm-3 control-label">备注</label>
+                                            <div class="col-sm-5">
+                                                {#                          <input type="datetime" class="form-control" id="inputMemo" placeholder="">#}
+                                                <textarea rows="3" id="inputMemo" class="form-control" name="memo">{{ os.detail.memo }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-4">
+{#                                                <button onclick="window.location.href='{% url 'manage_models' %}'" type="button" class="btn btn-default">取消</button>#}
+                                                <button onclick="javascript:history.go(-1);location.reload()" type="button" class="btn btn-default">返回</button>
+                                                <button type="submit" class="btn btn-primary">确定</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+{#                                </div>#}
+
+
+                                </div>  <!--tab-1 -->
+                            </div> <!--tab-content -->
+                        </div>   <!--panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    var required_fields = ["inputVersion"];
+    required_fields.forEach(function(field) {
+        $('label[for="' + field + '"]').parent().addClass("required");
+    });
+    $('#id_editform').validator({
+{#  timely:0 || false: 关闭实时验证，将只在提交表单的时候进行验证#}
+{#  timely:1 || true: 启用实时验证，在字段失去焦点后验证该字段#}
+{#  timely:2: 启用实时验证，在输入的同时验证该字段#}
+        timely: 1,
+        theme: "yellow_right_effect",
+        fields: {
+            "ostype": {
+                rule: "required",
+                tip: "不可更改",
+                ok: "",
+                msg: {required: "系统类型必须选择!"},
+            },
+            "version": {
+                rule: "required",
+                tip: "填写发行版本号",
+                ok: "",
+                msg: {required: "版本必须填写!"},
+            }
+        },
+        valid: function(form) {
+{#            form.submit();#}
+            $.ajax({
+                type: "POST",
+                url:"{% url 'manage_os_edit' %}",
+                data:$('#id_editform').serialize(),
+                traditional: true,
+                dataType: "json",   //返回的数据类型
+                success: function (data) {
+                    if (data.smg != ''){
+                        console.log(data.smg);
+                        $(".alert-warning").hide();
+                        $(".alert-success").text(data.smg);
+                        $(".alert-success").fadeIn();
+
+                    }
+                    else if (data.emg != '') {
+                        console.log(data.emg);
+                        $(".alert-success").hide();
+                        $(".alert-warning").text(data.emg);
+                        $(".alert-warning").fadeIn();
+                    }
+                },
+            });
+        }
+    });
+
+</script>
+
+
+
+{% endblock %}

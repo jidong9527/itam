@@ -1,0 +1,1186 @@
+{% extends 'base.html' %}
+{#{% load mytags %}#}
+{% block content %}
+
+
+
+{% include 'nav_cat_bar.html' %}
+<style>
+    .file-box{ position:relative;width:100%}
+    .txt{ height:22px; border:1px solid #cdcdcd; width:180px;}
+    .file{ position:absolute; top:0; right:80px; height:24px; filter:alpha(opacity:0);opacity: 0;width:260px }
+
+    span.select2-dropdown.select2-dropdown--below {
+        height: 250px;
+    }
+    .select2-container--bootstrap .select2-selection {
+        border-radius: 1px;
+        border: 1px solid #e5e6e7;
+        color: #e5e6e7;
+    }
+    .select2-container--bootstrap {
+        width: 100% !important;
+    }
+    .select2-container--bootstrap.select2-container--focus .select2-selection, .select2-container--bootstrap.select2-container--open .select2-selection {
+        border-color: #1ab394;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    .select2-container--bootstrap .select2-dropdown {
+        border-color: #1ab394;
+    }
+    .select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
+        background-color:#1ab394;
+        color:#fff;
+    }
+
+</style>
+    <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div id="ibox-content" class="ibox-title">
+                    <h5> 服务器 </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="panel blank-panel">
+                        <div class="panel-options">
+                            <ul id="id_nav_ul" class="nav nav-tabs">
+                                <li class="active" value="baseinfo"><a class="text-center"><i class="glyphicon glyphicon-home"></i>基本信息</a></li>
+                                <li value="conf"><a  class="text-center"><i class="fa fa-sliders"></i>配置</a></li>
+                                <li value="ports"><a  class="text-center"><i class="fa fa-signal"></i>网络端口</a></li>
+                                <li value="parts"><a  class="text-center"><i class="fa fa-wrench"></i>配件</a></li>
+                                <li value="cost"><a  class="text-center"><i class="fa fa-rmb"></i>成本</a></li>
+                                <li value="contract"><a  class="text-center"><i class="fa fa-file-pdf-o"></i>合同</a></li>
+                                <li value="history"><a  class="text-center"><i class="fa fa-history"></i>历史</a></li>
+                            </ul>
+                        </div>
+                        <div class="panel-body">
+
+                            <form id="id_form" target="_self" method="post" class="form-horizontal" role="form" >{% csrf_token %}
+                                <div class="col-lg-10" id="id_asset_detail">
+                                    <div id="baseinfo" class="tablediv">
+                                        <div id="toolbar_baseinfo" class="btn-group">
+                                            <button id="btn_save" type="button" class="btn btn-danger" onclick="window.location.href='#'">
+                                                <span class="fa fa-save" aria-hidden="true"></span>&nbsp;保存
+                                            </button>
+                                            <button id="btn_return" type="button" class="btn btn-primary" onclick="javascript:history.go(-1);location.reload()">
+                                                <span class="fa fa-reply" aria-hidden="true"></span>&nbsp;返回
+                                            </button>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <table class="detail_tab" name="baseinfo_table">
+                                            <tbody>
+                                                <tr>
+
+                                                    <td class="td-lable form-group">
+                                                        <label class="control-label" for="inputName">设备名称</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input  class="form-control " type="text" name="name" id="inputName" value="{{ asset_obj.name }}">
+                                                    </td>
+
+{#                                                    <td class="col-sm-1 col-lg-1">#}
+                                                    <td class="td-lable form-group">
+                                                        <label class="control-label " for="inputNumber">资产编号</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input class="form-control " type="text" name="asset_number" id="inputNumber" value="{{ asset_obj.asset_number }}">
+                                                    </td>
+
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputSN">序列号</label>
+                                                    </td>
+                                                    <td>
+                                                        <input class="form-control" type="text" name="sn" id="inputSN" value="{{ asset_obj.sn}}">
+                                                    </td>
+
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="id_model">设备型号</label>
+                                                    </td>
+                                                    <td>
+{#                                                        <input type="text" name="model" id="inputModel" value="{{ asset_obj.model }}">#}
+                                                        <select class="form-control select2" name="model" aria-required="true" id="id_model">
+                                                            {% for m in server_model %}
+                                                                {% if m.name == asset_obj.model %}
+                                                                    <option value="{{ m.id }}" selected>{{ m.manufactory.name }} -- {{ m.get_asset_type_display }} -- {{ m.name }}</option>
+                                                                {% else %}
+                                                                    <option value="{{ m.id }}">{{ m.manufactory.name }} -- {{ m.get_asset_type_display }} -- {{ m.name }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputAssetadmin">设备管理员</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="asset_admin" id="inputAssetadmin" value="{{ asset_obj.asset_admin | default_if_none:""}}">
+                                                    </td>
+
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="selectStatus">设备状态</label>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2" name="status" aria-required="true" id="selectStatus">
+                                                            {% for s in status_all %}
+                                                                {% if s.0 == asset_obj.status %}
+                                                                    <option value="{{ s.0 }}" selected>{{ s.1 }}</option>
+                                                                {% else %}
+                                                                    <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputOnlinedate">上架时间</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="online_date" id="inputOnlinedate"  value="{{ asset_obj.online_date | date:"Y-m-d" }}">
+                                                    </td>
+
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputOfflinedate">下架时间</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="offline_date" id="inputOfflinedate" value="{{ asset_obj.offline_date | date:"Y-m-d" }}">
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputCreateperson">创建人</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="create_person" id="inputCreateperson" value="{{ asset_obj.create_person}}" readonly>
+                                                    </td>
+
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputCreatedate">创建时间</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="create_date" id="inputCreatedate" value="{{ asset_obj.create_date | date:"Y-m-d" }}" readonly>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputUpdateperson">最后更新人</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="update_person" id="inputUpdateperson" value="{{ asset_obj.update_person }}" readonly>
+                                                    </td>
+
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputUpdatedate">最后更新时间</label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="update_date" id="inputUpdatedate" value="{{ asset_obj.update_date | date:"Y-m-d"  }}" readonly>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputQrcode">二维码</label>
+
+                                                    </td>
+                                                    <td>
+{#                                                        <input type="text" class="form-control" name="qrcode" id="inputQrcode">#}
+                                                        <div class="file-box">
+                                                            <input id='id_qrcode' name="qrcode" style="display:none"/>
+                                                            <input type="file" class="form-control" onchange="document.getElementById('id_qrcode').value=this.value"/>
+                                                        </div>
+                                                    </td>
+
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputPicture">设备图片</label>
+                                                    </td>
+                                                    <td>
+{#                                                        <input type="text" class="form-control" name="picture" id="inputPicture">#}
+                                                        <div class="file-box">
+                                                            <input id='id_picture' name="picture" style="display:none"/>
+{#                                                            <input type="file" name="picture_name" class="file" id="fileField" size="28" onchange="document.getElementById('id_picture').value=this.value" />#}
+                                                            <input type="file" class="form-control" onchange="document.getElementById('id_picture').value=this.value"/>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="form-group">
+                                                        <label class="control-label" for="inputMemo">备注</label>
+                                                    </td>
+                                                    <td >
+                                                        <textarea name="memo" class="form-control" id="inputMemo">{{ asset_obj.memo | default_if_none:""}}</textarea>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table> <!-- baseinfo table end -->
+                                    </div>  <!--baseinfo div end -->
+                                    <div id="conf" class="tablediv" hidden>
+                                        <div id="toolbar_conf" class="btn-group">
+                                            <button id="btn_save" type="button" class="btn btn-danger" onclick="window.location.href='#'">
+                                                <span class="fa fa-save" aria-hidden="true"></span>&nbsp;保存
+                                            </button>
+                                            <button id="btn_return" type="button" class="btn btn-primary" onclick="javascript:history.go(-1);location.reload()">
+                                                <span class="fa fa-reply" aria-hidden="true"></span>&nbsp;返回
+                                            </button>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <table class="detail_tab">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="td-lable form-group">
+                                                        <label class="control-label" for="selectCabinet">所在机柜</label>
+                                                    </td>
+                                                    <td class="td-input">
+    {#                                                    <input type="text" class="form-control" name="name" id="inputCabinet" value="{{ asset_obj.server.cabinet.name }}">#}
+                                                        <select class="form-control select2" name="cabinet" aria-required="true" id="selectCabinet">
+                                                            {% for c in cabinet_all %}
+                                                                {% if c.id == asset_obj.server.cabinet.id %}
+                                                                    <option value="{{ c.id }}" selected>{{ c.idc }} -- {{ c.name }}</option>
+                                                                {% else %}
+                                                                    <option value="{{ c.id }}">{{ c.idc }} -- {{ c.name }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+
+                                                    <td class="td-lable form-group">
+                                                        <label class="control-label" for="inputMemo">设备位置</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="number" class="form-control" name="location" id="inputLocation" value="{{ asset_obj.server.location }}">
+    {#                                                    <option value="two" disabled="disabled">Second (disabled)</option>#}
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="td-lable form-group">
+                                                        <label class="control-label" for="selectOS">操作系统版本</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <select class="form-control select2" name="os" aria-required="true" id="selectOS">
+                                                            {% for os in os_all %}
+                                                                {% if os.version == asset_obj.os %}
+                                                                    <option value="{{ os.id }}" selected>{{ os.get_os_type_display }} -- {{ os.version }}</option>
+                                                                {% else %}
+                                                                    <option value="{{ os.id }}">{{ os.get_os_type_display }} -- {{ os.version }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+
+                                                    <td class="td-lable form-group">
+                                                        <label class="control-label" for="selectService">服务信息</label>
+                                                    </td>
+                                                    <td class="td-input">
+    {#                                                    <input type="text" class="form-control" name="model" id="inputModel" value="{{ asset_obj.server.service }}">#}
+                                                        <select class="form-control select2" name="service" aria-required="true" id="selectService">
+                                                            <option></option>
+                                                            {% for service in service_all %}
+                                                                {% if service.id == asset_obj.server.service_id %}
+                                                                    <option value="{{ service.id }}" selected>{{ service.name }}</option>
+                                                                {% else %}
+                                                                    <option value="{{ service.id }}">{{ service.name }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputRaidtype">RAID类型</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="text" class="form-control" name="raid_type" id="inputRaidtype" value="{{ asset_obj.server.raid_type | default_if_none:""}}">
+                                                    </td>
+
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="selectStoragespace">存储空间使用</label>
+                                                    </td>
+                                                    <td class="td-input">
+    {#                                                    <input type="text" class="form-control"  name="status" id="inputStatus" value="{{ asset_obj.server.storage_used |  default_if_none:""}}">#}
+                                                        <select class="form-control select2" name="storagespace" aria-required="true" id="selectStoragespace">
+                                                            {% for space in storagespace_all %}
+                                                                {% if space.id == asset_obj.server.storage_used %}
+                                                                    <option value="{{ space.id }}" selected>{{ space.host_on }}:{{ space.name }}({{ space.volume }})</option>
+                                                                {% else %}
+                                                                    <option value="{{ space.id }}">{{ space.host_on }}:{{ space.name }}({{ space.volume }})</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputCPUcount">CPU核数</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="number" min="0" class="form-control" id="inputCPUcount" name="cpu_count" value="{{ asset_obj.server.cpu_count | default_if_none:"" }}">
+                                                    </td>
+
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputCPUmodel">CPU型号</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input class="form-control" id="inputCPUmodel" maxlength="128" name="cpu_model" type="text" value="{{ asset_obj.server.cpu_model | default_if_none:""}}">
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputMemory">内存大小(G)</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="number" min="0" class="form-control" id="inputMemory" name="memory" value="{{ asset_obj.server.memory | default_if_none:""}}">
+                                                    </td>
+
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputDisk">磁盘容量(G)</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="number" min="0" class="form-control" id="inputDisk" name="disk" value="{{ asset_obj.server.disk | default_if_none:""}}">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table> <!-- conf table end -->
+                                    </div> <!--conf div end -->
+                                    <div id="ports" class="tablediv" hidden>
+                                        <div id="toolbar_ports" class="btn-group">
+                                            <button id="btn_port_add" type="button" class="btn btn-primary" onclick="window.location.href='{% url 'asset_detail_item_action' asset_type asset_name  'ports' 'add' %}'">
+                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+                                            </button>
+                                            <button id="btn_port_delete" type="button" class="btn btn-danger">
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
+                                            </button>
+                                        </div>
+
+                                        <table id="id_ports_table" class="table table-bordered table-striped table-resize" data-reorderable-columns="false"></table>
+                                        <div id="returnMessages">
+                                            <span class="warning" style="display: none;color: #ff0000;"></span>
+                                            <span class="success" style="display: none;color: #1cc09f"></span>
+                                        </div>
+                                    </div> <!-- port div end -->
+
+                                    <div id="parts" class="tablediv" hidden>
+                                        <div id="toolbar_parts" class="btn-group">
+                                            <button id="btn_parts_add" type="button" class="btn btn-primary" onclick="window.location.href='{% url 'asset_detail_item_action' asset_type asset_name 'parts' 'add' %}'">
+                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+                                            </button>
+                                            <button id="btn_parts_delete" type="button" class="btn btn-danger">
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
+                                            </button>
+                                        </div>
+
+                                        <table id="id_parts_table" class="table table-bordered table-striped table-resize" data-reorderable-columns="false"></table>
+
+                                    </div>
+                                    <div id="cost" class="tablediv" hidden>
+                                        <div id="toolbar_cost" class="btn-group">
+                                            <button id="btn_save" type="button" class="btn btn-danger" onclick="window.location.href='#'">
+                                                <span class="fa fa-save" aria-hidden="true"></span>&nbsp;保存
+                                            </button>
+                                            <button id="btn_return" type="button" class="btn btn-primary" onclick="javascript:history.go(-1);location.reload()">
+                                                <span class="fa fa-reply" aria-hidden="true"></span>&nbsp;返回
+                                            </button>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <table class="detail_tab">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputPurchasedate">购买时间</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input class="form-control" type="text" name="purchase_date" id="inputPurchasedate">
+                                                    </td>
+
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputCost">购买成本(元)</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input class="form-control" type="number" name="cost" id="inputCost">
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputWarrantyperiod">质保年限</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="number" class="form-control" name="warranty_period" id="inputWarrantyperiod">
+                                                    </td>
+
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputExpiredate">过保时间</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="text" class="form-control" name="expire_date" id="inputExpiredate">
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputRenewaldate">续保时间</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="text" class="form-control" name="renewal_date" id="inputRenewaldate">
+                                                    </td>
+
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputRenewalcost">续保花费(元)</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="number" class="form-control" name="renewal_cost" id="inputRenewalcost">
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputPartscost">配件费用(元)</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="number" class="form-control" name="parts_cost" id="inputPartscost">
+                                                    </td>
+
+                                                    <td class="td-lable">
+                                                        <label class="control-label" for="inputTotalcost">总价值(元)</label>
+                                                    </td>
+                                                    <td class="td-input">
+                                                        <input type="number" class="form-control" name="total_cost" id="inputTotalcost" readonly>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table> <!-- cost table end -->
+                                    </div>
+                                    <div id="contract" class="tablediv" hidden>
+                                        <div id="toolbar_contract" class="btn-group">
+                                            <button id="btn_contract_add" type="button" class="btn btn-primary" onclick="window.location.href='{% url 'asset_detail_item_action' asset_type asset_name 'contract' 'add' %}'">
+                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+                                            </button>
+                                            <button id="btn_contract_delete" type="button" class="btn btn-danger">
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
+                                            </button>
+                                        </div>
+                                        <table id="id_contract_table" class="table table-bordered table-striped table-resize" data-reorderable-columns="false"></table>
+                                    </div>
+                                    <div id="history" class="tablediv" hidden>
+                                        <div id="toolbar_history" class="btn-group">
+                                            <button id="btn_save" type="button" class="btn btn-danger" onclick="window.location.href='#'">
+                                                <span class="fa fa-save" aria-hidden="true"></span>&nbsp;保存
+                                            </button>
+                                            <button id="btn_return" type="button" class="btn btn-primary" onclick="javascript:history.go(-1);location.reload()">
+                                                <span class="fa fa-reply" aria-hidden="true"></span>&nbsp;返回
+                                            </button>
+                                        </div>
+                                        <table id="id_history_table" class="table table-bordered table-striped table-resize" data-reorderable-columns="false"></table>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>   <!--panel-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    var required_fields = ["inputName", "inputSN", "id_model"];
+        required_fields.forEach(function(field) {
+            $('label[for="' + field + '"]').parent().addClass("required");
+    });
+
+    $('#id_nav_ul li').click(function(){
+        $(this).siblings().removeClass("active");
+        $(this).addClass("active");
+        tab = $(this).attr("value");
+        $('.tablediv').hide();
+        $('.tablediv[id='+tab+']').show();
+    });
+
+
+<!-- table Init -->
+    $(function () {
+        //1.初始化Table
+        var PortsTable = new PortsTableInit();
+        PortsTable.Init();
+
+        //2.初始化Button的点击事件
+        var PortsButton = new PortsButtonInit();
+        PortsButton.Init();
+
+        var PartsTable = new PartsTableInit();
+        PartsTable.Init();
+        var PartsButton = new PartsButtonInit();
+        PartsButton.Init();
+
+        var ContractTable = new ContractTableInit();
+        ContractTable.Init();
+        var ContractButton = new ContractButtonInit();
+        ContractButton.Init();
+
+        var HistoryTable = new HistoryTableInit();
+        HistoryTable.Init();
+        var HistoryButton = new HistoryButtonInit();
+        HistoryButton.Init();
+
+    });
+//Ports
+    var PortsTableInit = function () {
+        var oTableInit = new Object();
+        //初始化Table
+        oTableInit.Init = function () {
+            $('#id_ports_table').bootstrapTable({
+                url: '{% url 'asset_detail_item_action'  asset_type asset_name 'ports' 'list'%}',         //请求后台的URL（*）
+                method: 'get',                      //请求方式（*）
+                toolbar: '#toolbar_ports',                //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                queryParams: oTableInit.queryParams,//传递参数（*）
+                queryParamsType:'',                 //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
+                                                    // 设置为 '' 在这种情况下传给服务器的参数为：pageSize,pageNumber
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber:1,                       //初始化加载第一页，默认第一页
+                pageSize: 10,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100, '所有'],        //可供选择的每页的行数（*）
+                search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                strictSearch: false,                //设置为 true启用 全匹配搜索，否则为模糊搜索
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+    {#            height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度#}
+                uniqueId: "port_num",                     //每一行的唯一标识，一般为主键列
+                showToggle:true,                    //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: true,                   //是否显示详细页面模式
+                detailFormatter:function(index, row) {
+                    detail = '<div style="margin-left: 2%">' +
+                            '端口号：' + row['port_num'] + '<br/>' +
+                            '端口速率：' + row['rate'] + '<br/>' +
+                            '端口类型：' + row['type'] + '<br/>' +
+                            'IP地址：' + row['ip'] + '<br/>' +
+                            '连接到：' + row['connection'] + '<br/>' +
+                            '端口描述：' + row['description'] + '<br/>' +
+                            '创建人：' + row['create_person'] + '<br/>' +
+                            '最后更新人：' + row['update_person'] + '<br/>' +
+                            '创建时间：' + row['create_date'] + '<br/>' +
+                            '更新时间：' + row['update_date'] + '<br/>' +
+                            '备注：' + row['memo'] + '<br/>' + '</div>';
+                    return detail;
+                },
+
+                showExport:true,         //是否显示导出
+                exportDataType:'all',   //'basic', 'all', 'selected' 表示导出的模式是当前页、所有数据还是选中数据
+                exportTypes:['json', 'xml', 'csv', 'txt', 'sql', 'excel'],   //default: ['json', 'xml', 'csv', 'txt', 'sql', 'excel']
+
+                filterControl:true,      //显示列过滤框
+
+                columns: [{                   //列参数
+                    checkbox: true,
+                }, {
+                    field: 'port_num',
+                    title: '端口号',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                    formatter: function (value,row) {
+                        //通过formatter可以自定义列显示的内容
+                        // value：当前field的值
+                        // row：当前行的数据
+                        // index: 当前行的行索引，从0开始
+                        // $detail：当前行下面创建的新行里面的td对象。
+                        var name = '<a href="{% url 'asset_detail_item_action' asset_type asset_name 'ports' 'edit' %}?id='+row['id']+'" >'+value+'</a>';
+                        return name;
+                    }
+                }, {
+                    field: 'ip',
+                    title: 'IP地址',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                }, {
+                    field: 'connection',
+                    title: '连接到',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                },{
+                    field: 'description',               //跟后台传过来的字段名一直
+                    title: '端口描述',
+                    align: "center",
+                    valign: "middle",
+                    sortable:true,
+
+                    searchable:true,
+                    filterControl:'input',
+
+                }, {
+                    field: 'memo',
+                    title: '备注',
+                    align: "center",
+                    valign: "middle",
+                    searchable:true,
+                    filterControl:'input',
+                },]
+            }); <!-- end of $('#id_ports_table').bootstrapTable()-->
+        };   <!-- end of oTableInit.Init -->
+
+        //这是bootstrap-table带参到后台去的代码
+        oTableInit.queryParams = function (params) {
+            var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                pageNumber:params.pageNumber,  //页码
+                pageSize:params.pageSize,    //页面大小
+    {#            search:params.search,#}
+                filter:params.filter,
+
+            };
+            return temp;
+        };
+        return oTableInit;
+    };   <!-- end of PortsTableInit -->
+
+    var PortsButtonInit = function () {
+        var oInit = new Object();
+        var postdata = {};
+
+        oInit.Init = function () {
+            //初始化页面上面的按钮事件
+        };
+
+        return oInit;
+    };<!-- end of PortsButtonInit -->
+
+// Parts
+    var PartsTableInit = function () {
+        var oTableInit = new Object();
+        //初始化Table
+        oTableInit.Init = function () {
+            $('#id_parts_table').bootstrapTable({
+                url: '{% url 'asset_detail_item_action'  asset_type asset_name 'parts' 'list'%}',         //请求后台的URL（*）
+                method: 'get',                      //请求方式（*）
+                toolbar: '#toolbar_parts',                //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                queryParams: oTableInit.queryParams,//传递参数（*）
+                queryParamsType:'',                 //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
+                                                    // 设置为 '' 在这种情况下传给服务器的参数为：pageSize,pageNumber
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber:1,                       //初始化加载第一页，默认第一页
+                pageSize: 10,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100, '所有'],        //可供选择的每页的行数（*）
+                search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                strictSearch: false,                //设置为 true启用 全匹配搜索，否则为模糊搜索
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+    {#            height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度#}
+                uniqueId: "name",                     //每一行的唯一标识，一般为主键列
+                showToggle:true,                    //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                   //是否显示详细页面模式
+
+
+                showExport:true,         //是否显示导出
+                exportDataType:'all',   //'basic', 'all', 'selected' 表示导出的模式是当前页、所有数据还是选中数据
+                exportTypes:['json', 'xml', 'csv', 'txt', 'sql', 'excel'],   //default: ['json', 'xml', 'csv', 'txt', 'sql', 'excel']
+
+                filterControl:true,      //显示列过滤框
+
+                columns: [{                   //列参数
+                    checkbox: true,
+                }, {
+                    field: 'name',               //跟后台传过来的字段名一直
+                    title: '配件名称',
+                    align: "center",
+                    valign: "middle",
+                    sortable:true,
+
+                    searchable:true,
+                    filterControl:'input',
+
+
+                    formatter: function (value,row) {
+                        //通过formatter可以自定义列显示的内容
+                        // value：当前field的值
+                        // row：当前行的数据
+                        // index: 当前行的行索引，从0开始
+                        // $detail：当前行下面创建的新行里面的td对象。
+{#                        var name = '<a href="{% url 'asset_detail_ports_edit' asset_type asset_name %}?id='+row['id']+'" >'+value+'</a>';#}
+                        var name = value
+                        return name;
+                    }
+                }, {
+                    field: 'parts_type',
+                    title: '配件类型',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                }, {
+                    field: 'specifications',
+                    title: '规格',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                }, {
+                    field: 'unit_price',
+                    title: '单价',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                },{
+                    field: 'used_num',
+                    title: '使用数量',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                },{
+                    field: 'memo',
+                    title: '备注',
+                    align: "center",
+                    valign: "middle",
+                    searchable:true,
+                    filterControl:'input',
+                },]
+            }); <!-- end of $('#id_ports_table').bootstrapTable()-->
+        };   <!-- end of oTableInit.Init -->
+
+        //这是bootstrap-table带参到后台去的代码
+        oTableInit.queryParams = function (params) {
+            var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                pageNumber:params.pageNumber,  //页码
+                pageSize:params.pageSize,    //页面大小
+    {#            search:params.search,#}
+                filter:params.filter,
+
+            };
+            return temp;
+        };
+        return oTableInit;
+    };   <!-- end of PartsTableInit -->
+    var PartsButtonInit = function () {
+        var oInit = new Object();
+        var postdata = {};
+
+        oInit.Init = function () {
+            //初始化页面上面的按钮事件
+        };
+
+        return oInit;
+    };<!-- end of PartsButtonInit -->
+// Contract
+    var ContractTableInit = function () {
+        var oTableInit = new Object();
+        //初始化Table
+        oTableInit.Init = function () {
+            $('#id_contract_table').bootstrapTable({
+                url: '{% url 'asset_detail_item_action'  asset_type asset_name 'contract' 'list'%}',         //请求后台的URL（*）
+                method: 'get',                      //请求方式（*）
+                toolbar: '#toolbar_contract',                //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                queryParams: oTableInit.queryParams,//传递参数（*）
+                queryParamsType:'',                 //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
+                                                    // 设置为 '' 在这种情况下传给服务器的参数为：pageSize,pageNumber
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber:1,                       //初始化加载第一页，默认第一页
+                pageSize: 10,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100, '所有'],        //可供选择的每页的行数（*）
+                search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                strictSearch: false,                //设置为 true启用 全匹配搜索，否则为模糊搜索
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+    {#            height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度#}
+                uniqueId: "name",                     //每一行的唯一标识，一般为主键列
+                showToggle:true,                    //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                   //是否显示详细页面模式
+
+
+                showExport:true,         //是否显示导出
+                exportDataType:'all',   //'basic', 'all', 'selected' 表示导出的模式是当前页、所有数据还是选中数据
+                exportTypes:['json', 'xml', 'csv', 'txt', 'sql', 'excel'],   //default: ['json', 'xml', 'csv', 'txt', 'sql', 'excel']
+
+                filterControl:true,      //显示列过滤框
+
+                columns: [{                   //列参数
+                    checkbox: true,
+                }, {
+                    field: 'name',               //跟后台传过来的字段名一直
+                    title: '合同名称',
+                    align: "center",
+                    valign: "middle",
+                    sortable:true,
+
+                    searchable:true,
+                    filterControl:'input',
+
+
+                    formatter: function (value,row) {
+                        //通过formatter可以自定义列显示的内容
+                        // value：当前field的值
+                        // row：当前行的数据
+                        // index: 当前行的行索引，从0开始
+                        // $detail：当前行下面创建的新行里面的td对象。
+{#                        var name = '<a href="{% url 'asset_detail_ports_edit' asset_type asset_name %}?id='+row['id']+'" >'+value+'</a>';#}
+                        var name = value
+                        return name;
+                    }
+                }, {
+                    field: 'start_date',
+                    title: '起始时间',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                }, {
+                    field: 'end_date',
+                    title: '到期时间',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                }, {
+                    field: 'pdf',
+                    title: '文件',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                },]
+            }); <!-- end of $('#id_contract_table').bootstrapTable()-->
+        };   <!-- end of oTableInit.Init -->
+
+        //这是bootstrap-table带参到后台去的代码
+        oTableInit.queryParams = function (params) {
+            var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                pageNumber:params.pageNumber,  //页码
+                pageSize:params.pageSize,    //页面大小
+    {#            search:params.search,#}
+                filter:params.filter,
+
+            };
+            return temp;
+        };
+        return oTableInit;
+    };   <!-- end of ContractTableInit -->
+    var ContractButtonInit = function () {
+        var oInit = new Object();
+        var postdata = {};
+
+        oInit.Init = function () {
+            //初始化页面上面的按钮事件
+        };
+
+        return oInit;
+    };<!-- end of ContractButtonInit -->
+//History
+    var HistoryTableInit = function () {
+        var oTableInit = new Object();
+        //初始化Table
+        oTableInit.Init = function () {
+            $('#id_history_table').bootstrapTable({
+                url: '{% url 'asset_detail_item_action'  asset_type asset_name 'history' 'list'%}',         //请求后台的URL（*）
+                method: 'get',                      //请求方式（*）
+                toolbar: '#toolbar_history',                //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                queryParams: oTableInit.queryParams,//传递参数（*）
+                queryParamsType:'',                 //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
+                                                    // 设置为 '' 在这种情况下传给服务器的参数为：pageSize,pageNumber
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber:1,                       //初始化加载第一页，默认第一页
+                pageSize: 10,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100, '所有'],        //可供选择的每页的行数（*）
+                search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                strictSearch: false,                //设置为 true启用 全匹配搜索，否则为模糊搜索
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+    {#            height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度#}
+                uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+                showToggle:true,                    //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                   //是否显示详细页面模式
+
+
+                showExport:true,         //是否显示导出
+                exportDataType:'all',   //'basic', 'all', 'selected' 表示导出的模式是当前页、所有数据还是选中数据
+                exportTypes:['json', 'xml', 'csv', 'txt', 'sql', 'excel'],   //default: ['json', 'xml', 'csv', 'txt', 'sql', 'excel']
+
+                filterControl:true,      //显示列过滤框
+
+                columns: [
+                 {
+                    field: 'id',               //跟后台传过来的字段名一直
+                    title: '#',
+                    align: "center",
+                    valign: "middle",
+                    sortable: true,
+                    searchable: true,
+                    filterControl: 'input',
+                },{
+                    field: 'eventtype',               //跟后台传过来的字段名一直
+                    title: '事件类型',
+                    align: "center",
+                    valign: "middle",
+                    sortable: true,
+                    searchable: true,
+                    filterControl: 'select',
+
+                }, {
+                    field: 'target',
+                    title: '操作对象',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                }, {
+                    field: 'user',
+                    title: '用户',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                }, {
+                    field: 'remote_ip',
+                    title: '登录IP',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                },{
+                    field: 'date',
+                    title: '日期',
+                    align: 'center',
+                    valign: 'middle',
+                    searchable:true,
+                    filterControl:'input',
+                },{
+                    field: 'detail',
+                    title: '事件详情',
+                    align: "center",
+                    valign: "middle",
+                    searchable:true,
+                    filterControl:'input',
+                },]
+            }); <!-- end of $('#id_ports_table').bootstrapTable()-->
+        };   <!-- end of oTableInit.Init -->
+
+        //这是bootstrap-table带参到后台去的代码
+        oTableInit.queryParams = function (params) {
+            var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                pageNumber:params.pageNumber,  //页码
+                pageSize:params.pageSize,    //页面大小
+    {#            search:params.search,#}
+                filter:params.filter,
+
+            };
+            return temp;
+        };
+        return oTableInit;
+    };   <!-- end of HistoryTableInit -->
+    var HistoryButtonInit = function () {
+        var oInit = new Object();
+        var postdata = {};
+
+        oInit.Init = function () {
+            //初始化页面上面的按钮事件
+        };
+
+        return oInit;
+    };<!-- end of HistoryButtonInit -->
+
+    //实现列拖拽变换表格尺寸
+    $(function(){
+        var onSampleResized = function(e){
+            var table = $(e.currentTarget); //reference to the resized table
+        };
+        $(".table-resize").colResizable({
+            liveDrag:true,
+            gripInnerHtml:"<div class='grip'></div>",
+            draggingClass:"dragging",
+            onResize:onSampleResized
+        });
+    });
+
+    $(document).ready(function() {
+        $('#btn_port_delete').click(function () {
+
+            var id_select = $.map($('#id_ports_table').bootstrapTable('getSelections'),function (row){
+                return row.id
+            });
+            console.log('id_select:',id_select);
+            if (id_select == ''){
+                alert("请至少选择一行!");
+                return false;
+            }
+            if (confirm("确定删除?")) {
+                $.ajax({
+                    type: "post",
+                    data: { "id_select": id_select},
+                    traditional: true,                       /* 设置为false则后台接收到的数组名会是“id_select[]”*/
+                    dataType: "json",
+                    url: "{% url 'asset_detail_item_action' asset_type asset_name 'ports' 'delete'%}",
+                    success: function (data) {
+    {#                    parent.location.reload();#}
+                        $('#id_ports_table').bootstrapTable("remove",{
+                            field: "id",
+                            values: id_select
+                        });
+                        if (data.smg != ''){
+                            console.log(data);
+                            $(".success").html(data.smg);
+                            $(".success").show().delay(5000).fadeOut();
+                            $(".warning").hide();
+                        }
+                        else if (data.emg != '') {
+                            console.log(data);
+                            $(".warning").html(data.emg);
+                            $(".warning").show();
+                            $(".success").hide();
+                        }
+                        else {
+                            $(".warning").hide();
+                            $(".success").hide();
+                        }
+                    } <!-- end success-->
+                });
+            }
+        }); <!-- end of $('#btn_delete').click() -->
+
+
+        $('#inputOnlinedate,#inputOfflinedate,#inputPurchasedate,#inputExpiredate,#inputRenewaldate').datetimepicker({
+            format: "YYYY-MM-DD",
+            locale: moment.locale('zh-cn'),
+            showTodayButton: true,
+            showClear: true,
+            keepOpen: true,
+        });
+    });  <!-- end of $(document).ready(function()-->
+
+<!-- table Init end-->
+
+<!-- selete init start -->
+    $(document).ready(function() {
+        select_init();
+    });
+    function select_init() {
+        $('#id_model').select2({
+            placeholder: "请选择设备型号",
+            language: "zh-CN",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#selectCabinet').select2({
+            placeholder: "请选择机柜",
+            language: "zh-CN",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#selectOS').select2({
+            language: "zh-CN",
+            placeholder: "请选择操作系统",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#selectStatus').select2({
+            language: "zh-CN",
+            placeholder: "请选择状态",
+            allowClear: true,
+            theme: "bootstrap",
+            minimumResultsForSearch: Infinity,
+        });
+        $('#selectService').select2({
+            language: "zh-CN",
+            placeholder: "请选择服务",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#selectStoragespace').select2({
+            language: "zh-CN",
+            placeholder: "选择存储空间",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_bladecenter_select').select2({
+            language: "zh-CN",
+            placeholder: "请选择刀箱",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_contract').select2({
+            placeholder: "请选择合同",
+            language: "zh-CN",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+        $('#id_hosted_on').select2({
+            language: "zh-CN",
+            placeholder: "请选择宿主机",
+            allowClear: true,
+            theme: "bootstrap",
+        });
+
+        $(".selectdiv").delegate("span.select2-selection__clear","mouseover",function(){
+            $(this).attr("title","清空");
+        });
+    };
+
+<!-- selete init end -->
+
+
+
+
+</script>
+{% endblock %}
